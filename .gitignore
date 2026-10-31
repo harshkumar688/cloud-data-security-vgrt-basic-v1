@@ -1,0 +1,11 @@
+/target/
+/data/
+/.idea/
+*.iml
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore

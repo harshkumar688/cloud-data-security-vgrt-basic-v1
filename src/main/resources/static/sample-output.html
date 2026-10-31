@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sample dashboard · V-GRT Secure Cloud</title>
+  <link rel="stylesheet" href="/app.css">
+  <style>
+    .sample-banner{padding:16px 18px;border:1px solid #ead9a9;background:#fff8e5;color:#6d5317;border-radius:11px;margin-bottom:28px;line-height:1.55}
+    .sample-banner strong{display:block;margin-bottom:3px}
+    .sample-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:34px}
+    .sample-stat{padding:20px 21px;background:#fff;border:1px solid var(--line);border-radius:12px}
+    .sample-stat span{color:var(--muted);font-size:.8rem}.sample-stat strong{display:block;font:800 1.8rem Manrope,sans-serif;color:var(--deep);margin-top:8px}
+    .sample-events{margin-top:34px}.sample-label{font-size:.71rem;font-weight:700;letter-spacing:.12em;color:var(--teal)}
+    @media(max-width:700px){.sample-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/sample-output.html"><span class="brand-mark">V</span><span>V-GRT <small>SECURE CLOUD</small></span></a>
+  <nav><span class="user-chip">Demo account</span><span class="secure-pill"><span></span> Sample view</span></nav>
+</header>
+<main class="container">
+  <section class="welcome">
+    <div><p class="eyebrow">CLOUD DATA SECURITY ENHANCEMENT</p><h1>Sample dashboard</h1><p class="muted">A preview of the basic V-GRT file workspace.</p></div>
+  </section>
+  <aside class="sample-banner"><strong>Static sample output</strong>Everything on this page is example data. Sign-in, upload, encryption, download, authorization and audit recording are not running in this preview.</aside>
+  <section class="sample-grid" aria-label="Example summary">
+    <article class="sample-stat"><span>Example users</span><strong>2</strong></article>
+    <article class="sample-stat"><span>Example stored files</span><strong>2</strong></article>
+    <article class="sample-stat"><span>Example denied requests</span><strong>1</strong></article>
+  </section>
+  <section class="files-section">
+    <div class="section-heading"><div><p class="eyebrow">OWNER ONLY · EXAMPLE DATA</p><h2>Stored files</h2></div><span class="count">2 sample files</span></div>
+    <div class="file-list">
+      <article class="file-row"><div class="file-icon">▧</div><div class="file-info"><strong>Quarterly-report.pdf</strong><span>1,482,016 bytes · demo.user · Sample only</span></div><span class="secure-pill"><span></span> Encrypted sample</span></article>
+      <article class="file-row"><div class="file-icon">▧</div><div class="file-info"><strong>Project-notes.txt</strong><span>8,240 bytes · demo.user · Sample only</span></div><span class="secure-pill"><span></span> Encrypted sample</span></article>
+    </div>
+  </section>
+  <section class="sample-events">
+    <div class="section-heading"><div><p class="eyebrow">EXAMPLE ENTRIES</p><h2>Recent activity</h2></div></div>
+    <div class="panel table-wrap"><table><thead><tr><th>Time</th><th>Actor</th><th>Event</th><th>Outcome</th><th>Example detail</th></tr></thead><tbody>
+      <tr><td>2026-10-31 10:42 UTC</td><td>demo.user</td><td>LOGIN</td><td><span class="status ok">SUCCESS</span></td><td>Sample sign-in event</td></tr>
+      <tr><td>2026-10-31 10:46 UTC</td><td>demo.user</td><td>FILE_DOWNLOAD</td><td><span class="status ok">SUCCESS</span></td><td>Sample authorized download</td></tr>
+      <tr><td>2026-10-31 10:50 UTC</td><td>demo.other</td><td>FILE_DOWNLOAD</td><td><span class="status">DENIED</span></td><td>Sample file ownership denial</td></tr>
+    </tbody></table></div>
+  </section>
+  <footer class="page-footer">V-GRT prototype · virtualization is logical per-account resource isolation.</footer>
+</main>
+</body>
+</html>

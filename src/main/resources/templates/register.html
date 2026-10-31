@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Create account · V-GRT Secure Cloud</title><link rel="stylesheet" th:href="@{/app.css}"></head>
+<body class="auth-page"><main class="auth-card">
+  <a class="brand" th:href="@{/login}"><span class="brand-mark">V</span><span>V-GRT <small>SECURE CLOUD</small></span></a>
+  <p class="eyebrow">PRIVATE BY DEFAULT</p><h1>Create your account</h1><p class="muted">Your files will be isolated to your account.</p>
+  <div class="notice error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+  <form th:action="@{/register}" th:object="${registration}" method="post" class="stack">
+    <label>Username<input th:field="*{username}" autocomplete="username" required minlength="3" maxlength="40"><small>3–40 letters, numbers, dots, underscores or hyphens</small></label>
+    <small class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+    <label>Password<input th:field="*{password}" type="password" autocomplete="new-password" required minlength="12" maxlength="72"><small>Use at least 12 characters.</small></label>
+    <small class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+    <button class="button primary" type="submit">Create account</button>
+  </form>
+  <p class="footnote">Already registered? <a th:href="@{/login}">Sign in</a></p>
+</main></body></html>

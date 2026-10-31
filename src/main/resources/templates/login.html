@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · V-GRT Secure Cloud</title><link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body class="auth-page"><main class="auth-card">
+  <a class="brand" th:href="@{/}"><span class="brand-mark">V</span><span>V-GRT <small>SECURE CLOUD</small></span></a>
+  <p class="eyebrow">CLOUD DATA SECURITY ENHANCEMENT</p><h1>Welcome back</h1><p class="muted">Sign in to your private encrypted workspace.</p>
+  <div class="notice success" th:if="${success}" th:text="${success}"></div>
+  <div class="notice error" th:if="${param.error}">Username or password is incorrect.</div>
+  <div class="notice" th:if="${param.logout}">You have been signed out.</div>
+  <form th:action="@{/login}" method="post" class="stack">
+    <label>Username<input name="username" autocomplete="username" required autofocus></label>
+    <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+    <button class="button primary" type="submit">Sign in</button>
+  </form>
+  <p class="footnote">New here? <a th:href="@{/register}">Create an account</a></p>
+</main></body></html>

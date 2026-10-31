@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My files · V-GRT Secure Cloud</title><link rel="stylesheet" th:href="@{/app.css}"></head>
+<body>
+<header class="topbar">
+  <a class="brand" th:href="@{/}"><span class="brand-mark">V</span><span>V-GRT <small>SECURE CLOUD</small></span></a>
+  <nav>
+    <a class="nav-link" th:if="${isAdmin}" th:href="@{/admin/audit}">Audit log</a>
+    <span class="user-chip" th:text="${username}"></span>
+    <form th:action="@{/logout}" method="post"><button class="link-button" type="submit">Sign out</button></form>
+  </nav>
+</header>
+<main class="container">
+  <section class="welcome">
+    <div><p class="eyebrow">PERSONAL VAULT</p><h1>My files</h1><p class="muted">Your encrypted files, stored privately and accessible only to you.</p></div>
+    <div class="secure-pill"><span></span><span>AES-256-GCM</span><span>Encryption active</span></div>
+  </section>
+
+  <div class="notice success" th:if="${success}" th:text="${success}"></div>
+  <div class="notice error" th:if="${error}" th:text="${error}"></div>
+
+  <section class="panel upload-panel">
+    <div class="upload-copy"><p class="eyebrow">ADD TO YOUR VAULT</p><h2>Upload a file</h2><p class="muted">Files up to 10 MB are encrypted before storage.</p></div>
+    <form th:action="@{/files}" method="post" enctype="multipart/form-data" class="upload-form">
+      <input type="file" name="file" aria-label="Choose a file" required>
+      <button class="button primary" type="submit">Encrypt and upload</button>
+    </form>
+  </section>
+
+  <section class="files-section">
+    <div class="section-heading"><div><p class="eyebrow">PRIVATE TO YOUR ACCOUNT</p><h2>Stored files</h2></div><span class="count" th:text="${#lists.size(files)} + ' files'"></span></div>
+    <div class="empty panel" th:if="${#lists.isEmpty(files)}"><span class="empty-icon">▤</span><h3>No files yet</h3><p class="muted">Choose a file above to add your first encrypted item.</p></div>
+    <div class="file-list" th:if="${!#lists.isEmpty(files)}"><article class="file-row" th:each="file : ${files}">
+      <div class="file-icon" aria-hidden="true">▧</div>
+      <div class="file-info"><strong th:text="${file.originalName}"></strong><span th:text="|${#numbers.formatInteger(file.sizeBytes, 1, 'COMMA')} bytes · ${file.createdAt} UTC|"></span></div>
+      <form th:action="@{/files/{id}/download(id=${file.id})}" method="post"><button class="button secondary" type="submit">Download</button></form>
+    </article></div>
+  </section>
+
+  <section class="roadmap-section" aria-labelledby="roadmap-title">
+    <div class="roadmap-heading"><div><p class="eyebrow">PRODUCT ROADMAP</p><h2 id="roadmap-title">Planned capabilities</h2><p class="muted">These features are not available yet.</p></div><span class="progress-tag">In progress</span></div>
+    <div class="roadmap-list">
+      <article class="roadmap-item"><span class="roadmap-index">01</span><div><h3>Risk assessment</h3><p>Review access and file activity against configurable security rules.</p></div><span class="progress-tag">In progress</span></article>
+      <article class="roadmap-item"><span class="roadmap-index">02</span><div><h3>Shared workspaces</h3><p>Invite collaborators with clear, account-scoped permissions.</p></div><span class="progress-tag">In progress</span></article>
+      <article class="roadmap-item"><span class="roadmap-index">03</span><div><h3>Retention policies</h3><p>Set lifecycle and deletion rules for stored files.</p></div><span class="progress-tag">In progress</span></article>
+    </div>
+  </section>
+
+  <footer class="page-footer">V-GRT prototype · Private file storage and auditability</footer>
+</main>
+</body>
+</html>
