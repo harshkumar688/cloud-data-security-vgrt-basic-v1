@@ -21,7 +21,15 @@ V-GRT in this prototype means **Virtualization** through logical per-account iso
 
 On Windows, run `run-local.cmd` from this project directory. It builds the app, generates an RSA key pair for that process, and starts the server at `http://localhost:8080`. The default database is in-memory H2, so accounts and file metadata are cleared when the app stops. This is for local evaluation only; do not use it for important data.
 
+To view the app from another device on the same trusted Wi-Fi, open this project folder in VS Code, press `Ctrl+Shift+P`, run **Tasks: Run Task**, and choose **Run V-GRT on local network**. The VS Code terminal shows startup output and network instructions. On the other device, open `http://<this-PC-IPv4-address>:8080`; find the address with `ipconfig` on the PC. If prompted, allow Java through Windows Firewall for private networks. This is LAN-only demo access, not public internet hosting. Stop the task with `Ctrl+C`.
+
 The included `mvnw.cmd` bootstraps Maven 3.9.11 in the user's Maven wrapper cache if `mvn` is not installed.
+
+## Vercel preview deployment
+
+Vercel's Container Runtime can build the root `Dockerfile` and run this Spring Boot HTTP app. Import this repository in Vercel after pushing the deployment files to GitHub, keep the project root at the repository root, and use the Container framework preset if Vercel does not select it automatically. The image listens on Vercel's `PORT` and binds to all container interfaces.
+
+Without database or crypto environment variables, the container generates temporary RSA keys and uses the default in-memory H2 database plus `/tmp` file storage. This is only suitable for a disposable preview: Vercel may start multiple instances or scale them down, and accounts, audit records, keys, and uploaded files are not durable. For a persistent deployment, configure an external MySQL database and persistent object storage, provide stable `VGRT_RSA_PUBLIC_KEY` and `VGRT_RSA_PRIVATE_KEY` values as Vercel secrets, and add an object-storage adapter; the current file service writes to the local filesystem and does not yet support remote object storage.
 
 ## MySQL setup (optional)
 
