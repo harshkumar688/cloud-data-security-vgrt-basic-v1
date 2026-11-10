@@ -3,6 +3,7 @@ package com.vgrt.securecloud.controller;
 import com.vgrt.securecloud.repository.AuditEventRepository;
 import com.vgrt.securecloud.service.DashboardService;
 import com.vgrt.securecloud.service.FileService;
+import com.vgrt.securecloud.service.SecurityCenterService;
 import java.util.Map;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,11 +16,14 @@ public class PageController {
     private final FileService files;
     private final AuditEventRepository auditEvents;
     private final DashboardService dashboardService;
+    private final SecurityCenterService securityCenterService;
 
-    public PageController(FileService files, AuditEventRepository auditEvents, DashboardService dashboardService) {
+    public PageController(FileService files, AuditEventRepository auditEvents,
+                          DashboardService dashboardService, SecurityCenterService securityCenterService) {
         this.files = files;
         this.auditEvents = auditEvents;
         this.dashboardService = dashboardService;
+        this.securityCenterService = securityCenterService;
     }
 
     private void populateAuthModel(Authentication auth, Model model, String activeNav) {
@@ -58,6 +62,44 @@ public class PageController {
         return "dashboard";
     }
 
+    @GetMapping("/files")
+    public String myFiles(Authentication auth, Model model) {
+        populateAuthModel(auth, model, "files");
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        var fileList = files.listOwned(auth.getName());
+        model.addAttribute("files", fileList);
+        model.addAttribute("totalFiles", fileList.size());
+        model.addAttribute("totalBytes", fileList.stream().mapToLong(f -> f.getSizeBytes()).sum());
+        return "files";
+    }
+
+    @GetMapping("/vault")
+    public String vaultRedirect() {
+        return "redirect:/files";
+    }
+
+    @GetMapping("/upload")
+    public String secureUpload(Authentication auth, Model model) {
+        populateAuthModel(auth, model, "upload");
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        return "upload";
+    }
+
+    @GetMapping("/security")
+    public String securityCenter(Authentication auth, Model model) {
+        populateAuthModel(auth, model, "security");
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        Map<String, Object> secData = securityCenterService.getSecurityData(auth.getName());
+        model.addAllAttributes(secData);
+        return "security";
+    }
+
     @GetMapping("/about")
     public String about(Authentication auth, Model model) {
         populateAuthModel(auth, model, "about");
@@ -74,12 +116,6 @@ public class PageController {
     public String architecture(Authentication auth, Model model) {
         populateAuthModel(auth, model, "architecture");
         return "architecture";
-    }
-
-    @GetMapping("/vault")
-    public String vault(Authentication auth, Model model) {
-        populateAuthModel(auth, model, "vault");
-        return "home";
     }
 
     @GetMapping("/admin/audit")

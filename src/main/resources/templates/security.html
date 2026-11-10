@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('Security Center')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('security')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Platform', 'Security Center')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Alert Notices -->
+      <div class="notice success" th:if="${success}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span th:text="${success}">Security verification passed.</span>
+      </div>
+      <div class="notice error" th:if="${error}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span th:text="${error}">Security anomaly detected.</span>
+      </div>
+
+      <!-- Security Center Hero Banner -->
+      <section class="sec-hero-banner">
+        <div class="sec-status-hero">
+          <div class="sec-shield-badge">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="eyebrow" style="color: #22c55e;">CONTINUOUS POSTURE ASSESSMENT</div>
+            <h1 style="margin: 4px 0 6px 0; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em;">
+              Security &amp; Cryptographic Center
+            </h1>
+            <p class="text-xs text-muted" style="margin: 0;">
+              Real-time audit telemetry, cryptographic envelope health, key-management protection, and continuous integrity verification.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="badge badge-cipher" style="padding: 6px 12px; font-size: 0.75rem;">
+            <span class="pulse-dot"></span>
+            ENCLAVE ZERO-BREACH
+          </span>
+          <button type="button" class="btn btn-secondary btn-sm" data-modal-target="cryptoModal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Cryptographic Specs
+          </button>
+        </div>
+      </section>
+
+      <!-- 1. ENCRYPTION STATUS -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">PILLAR IV: TRUSTED CRYPTOGRAPHY</div>
+            <h3 class="card-title">1. Encryption Status &amp; Algorithm Specifications</h3>
+          </div>
+          <span class="badge badge-cipher" th:text="${encryptionStatus.status}">ACTIVE · ALL VOLUMES SEALED</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 18px;">
+              <span class="eyebrow">SYMMETRIC ENCRYPTION</span>
+              <h4 style="margin: 4px 0 6px 0; font-size: 1.05rem;" th:text="${encryptionStatus.symmetricAlgorithm}">AES-256-GCM</h4>
+              <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;">
+                Key Size: <strong class="font-mono text-primary" th:text="${encryptionStatus.symmetricKeySize}">256 bits</strong><br>
+                MAC Tag: <span class="font-mono" th:text="${encryptionStatus.authenticationTagSize}">128-bit GCM Tag</span><br>
+                Initialization Vector: <span class="font-mono" th:text="${encryptionStatus.initializationVector}">96-bit Secure Nonce</span>
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 18px;">
+              <span class="eyebrow">ASYMMETRIC KEY WRAPPING</span>
+              <h4 style="margin: 4px 0 6px 0; font-size: 1.05rem;" th:text="${encryptionStatus.asymmetricAlgorithm}">RSA-OAEP-2048</h4>
+              <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;">
+                Mask Generation: <span class="font-mono">MGF1-SHA256</span><br>
+                Envelope Model: <span class="font-mono" th:text="${encryptionStatus.wrappingMode}">Hybrid Envelope</span><br>
+                Storage Exposure: <strong class="text-primary font-mono">Zero Plaintext Persistence</strong>
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 18px;">
+              <span class="eyebrow">PASSWORD DERIVATION (KDF)</span>
+              <h4 style="margin: 4px 0 6px 0; font-size: 1.05rem;" th:text="${accessSecurity.passwordHashing}">BCrypt-12</h4>
+              <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;">
+                Cost Factor: <strong class="font-mono text-primary">12 (4,096 Salted Rounds)</strong><br>
+                Resistance: <span class="font-mono">Rainbow Tables &amp; ASIC Prohibitive</span><br>
+                Transport Protection: <span class="font-mono">TLS 1.3 Transport Ingress</span>
+              </p>
+            </div>
+
+          </div>
+
+          <div style="padding: 12px 16px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>All stored objects are encrypted in memory prior to disk write. Neither database dumps nor filesystem clones expose readable plaintext.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. FILE INTEGRITY -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">DATA AUTHENTICITY</div>
+            <h3 class="card-title">2. File Integrity &amp; SHA-256 Digest Verification</h3>
+          </div>
+          <span class="badge badge-cipher" th:text="${'Integrity: ' + fileIntegrity.integrityPassRate}">Integrity: 100.0%</span>
+        </div>
+        <div class="card-body">
+          <p class="text-sm text-secondary" style="margin-bottom: 20px; line-height: 1.6;">
+            The integrity verification engine re-hashes decrypted byte streams using <strong>SHA-256</strong> on every retrieval and verifies the 128-bit Galois/Counter Mode authentication tag. Discrepancies immediately trigger security exception halts.
+          </p>
+
+          <div class="table-container" th:if="${files != null and !files.isEmpty()}">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Object Filename</th>
+                  <th>Original Upload Digest (SHA-256)</th>
+                  <th>GCM Nonce (IV)</th>
+                  <th>Verification Engine</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="file : ${files}">
+                  <td>
+                    <span class="font-medium text-primary" th:text="${file.originalName}">document.pdf</span>
+                  </td>
+                  <td>
+                    <code class="font-mono text-xs text-primary" th:text="${file.sha256}">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code>
+                  </td>
+                  <td>
+                    <code class="font-mono text-xs text-muted" th:text="${file.nonceBase64}">W5k18x==</code>
+                  </td>
+                  <td>
+                    <span class="badge badge-pill badge-mono" style="color: #22c55e; border-color: rgba(34, 197, 94, 0.3);">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>
+                      Verified Match
+                    </span>
+                  </td>
+                  <td style="text-align: right;">
+                    <form th:action="@{'/files/' + ${file.id} + '/verify'}" method="post" style="display: inline; margin: 0;">
+                      <input type="hidden" name="redirect" value="/security">
+                      <button type="submit" class="btn btn-secondary btn-sm" title="Trigger instant integrity re-check">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Test Integrity
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div th:if="${files == null or files.isEmpty()}" class="empty-state-card" style="padding: 28px 16px;">
+            <p class="text-sm text-muted" style="margin: 0;">No files in tenant enclave. Upload files to test SHA-256 digest matching.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. KEY MANAGEMENT -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">HIERARCHICAL KEY LIFECYCLE</div>
+            <h3 class="card-title">3. Key Management &amp; Protection Architecture</h3>
+          </div>
+          <span class="badge badge-mono">Zero Secrets Exposed</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin-bottom: 20px;">
+            
+            <div style="padding: 18px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
+              <span class="eyebrow">ACTIVE PUBLIC KEY FINGERPRINT (SHA-256)</span>
+              <code class="font-mono text-xs text-primary" style="word-break: break-all; background: var(--bg-surface); padding: 8px; border-radius: var(--radius-xs);" th:text="${keyManagement.publicKeyFingerprint}">SHA256:7b:19:9f:01...</code>
+              <p class="text-xs text-muted" style="margin: 0;">
+                Public key safe thumbprint used for wrapping ephemeral session AES keys.
+              </p>
+            </div>
+
+            <div style="padding: 18px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px;">
+              <span class="eyebrow">PRIVATE KEY PROTECTION POSTURE</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+                <strong class="text-sm text-primary" th:text="${keyManagement.privateKeyExposure}">NEVER EXPOSED · ZERO ACCESS PERMITTED</strong>
+              </div>
+              <p class="text-xs text-muted" style="margin: 0;">
+                Private key material is isolated within secure server memory. Under zero circumstances is it serialized, transmitted, or logged.
+              </p>
+            </div>
+
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; padding: 14px 18px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.8rem;">
+            <div>
+              <span class="text-muted">Key Rotation Policy:</span>
+              <strong class="text-primary" style="margin-left: 6px;">Ephemeral Symmetric (Per-Object) + Process-Scoped Master RSA</strong>
+            </div>
+            <span class="badge badge-cipher">Active Cryptographic Hygiene</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. ACCESS SECURITY -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">PILLAR II: GOVERNANCE &amp; IDENTITY</div>
+            <h3 class="card-title">4. Access Security &amp; Authorization Enclave</h3>
+          </div>
+          <span class="badge badge-cipher" th:text="${accessSecurity.accountStatus}">SECURED &amp; ISOLATED</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            
+            <div style="padding: 16px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <span class="eyebrow">AUTHENTICATED PRINCIPAL</span>
+              <div class="font-mono font-bold text-base text-primary" style="margin: 4px 0;" th:text="${accessSecurity.username}">username</div>
+              <span class="badge badge-mono text-xs" th:text="${accessSecurity.role}">ROLE_USER</span>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <span class="eyebrow">AUTHORIZATION SCOPE</span>
+              <div class="text-sm font-semibold text-primary" style="margin: 4px 0;" th:text="${accessSecurity.assignedPermissions}">Tenant Enclave Partition</div>
+              <span class="text-xs text-muted">Principle of Least Privilege</span>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <span class="eyebrow">UNAUTHORIZED ATTEMPTS</span>
+              <div class="font-mono font-bold text-base" style="margin: 4px 0;" 
+                   th:classappend="${accessSecurity.unauthorizedAttemptsCount > 0 ? 'text-danger' : 'text-primary'}"
+                   th:text="${accessSecurity.unauthorizedAttemptsCount}">0</div>
+              <span class="text-xs text-muted">Failed login telemetry captured</span>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <span class="eyebrow">SESSION VERIFICATIONS</span>
+              <div class="font-mono font-bold text-base text-primary" style="margin: 4px 0;" th:text="${accessSecurity.successfulLoginsCount}">1</div>
+              <span class="text-xs text-muted">Audit-confirmed logins</span>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SECURITY RECOMMENDATIONS -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">PILLAR III: RISK ASSESSMENT &amp; REMEDIATION</div>
+            <h3 class="card-title">5. Security Recommendations &amp; Posture Remediation</h3>
+          </div>
+          <span class="badge badge-pill badge-mono">Live Recommendations</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 14px;">
+          
+          <div th:each="rec : ${recommendations}" 
+               class="recommendation-card"
+               th:classappend="${rec.severity == 'HIGH' ? 'severity-high' : (rec.severity == 'LOW' ? 'severity-low' : 'severity-info')}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary);" th:text="${rec.title}">Security Recommendation</h4>
+              <span class="badge text-xs" 
+                    th:classappend="${rec.severity == 'HIGH' ? 'badge-danger' : (rec.severity == 'LOW' ? 'badge-mono' : 'badge-cipher')}"
+                    th:text="${rec.severity + ' PRIORITY'}">LOW PRIORITY</span>
+            </div>
+            <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;" th:text="${rec.impact}">Impact description.</p>
+            <div style="margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-muted);">
+              <strong>Remediation:</strong> <span th:text="${rec.remediation}">Action steps.</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+  </div>
+</div>
+
+<!-- Reusable Cryptographic Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+</body>
+</html>

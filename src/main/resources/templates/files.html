@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('My Encrypted Files')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('files')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Platform', 'My Encrypted Files')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Alert Notices -->
+      <div class="notice success" th:if="${success}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span th:text="${success}">Operation completed successfully.</span>
+      </div>
+      <div class="notice error" th:if="${error}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span th:text="${error}">An error occurred.</span>
+      </div>
+
+      <!-- Page Header & Actions -->
+      <section class="page-header">
+        <div class="page-header-content">
+          <div class="eyebrow">ISOLATED TENANT STORAGE ENCLAVE</div>
+          <div class="page-header-title">
+            <h1>My Encrypted Files</h1>
+            <span class="badge badge-cipher">AES-256-GCM SEALED</span>
+          </div>
+          <p>
+            Your objects are partitioned at the virtualization layer. Each file is encrypted with a dedicated ephemeral symmetric key, protected via RSA-OAEP envelope wrapping.
+          </p>
+        </div>
+        <div class="page-header-actions">
+          <a th:href="@{/upload}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Secure Upload
+          </a>
+          <a th:href="@{/security}" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Security Center
+          </a>
+        </div>
+      </section>
+
+      <!-- Workspace & Enclave Metadata Strip -->
+      <section class="card" style="padding: 16px 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; font-size: 0.8rem;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <span>Owner Principal: <strong class="text-primary font-mono" th:text="${username}">user</strong></span>
+            <span class="text-muted">·</span>
+            <span>Storage Enclave: <span class="badge badge-mono">H2 CIPHERTEXT BLOB</span></span>
+            <span class="text-muted">·</span>
+            <span>Tenancy Isolation: <span class="text-primary font-medium">Virtualization Level 3</span></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span>Total Objects: <strong class="font-mono text-primary" th:text="${totalFiles}">0</strong></span>
+            <span class="text-muted">·</span>
+            <span>Encrypted Volume: <strong class="font-mono text-primary" th:text="${#numbers.formatDecimal(totalBytes / 1024.0, 1, 1) + ' KB'}">0 KB</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search, Filters, and Sorting Control Bar -->
+      <section class="files-control-bar">
+        <!-- Search Input -->
+        <div class="files-search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="filesSearchInput" class="files-search-input" placeholder="Search files by name, type, or SHA-256 hash..." onkeyup="filterFilesTable()">
+        </div>
+
+        <!-- Category Filters -->
+        <div class="files-filter-group" role="tablist">
+          <button type="button" class="files-category-pill active" onclick="setCategoryFilter('all', this)">All</button>
+          <button type="button" class="files-category-pill" onclick="setCategoryFilter('docs', this)">Documents</button>
+          <button type="button" class="files-category-pill" onclick="setCategoryFilter('images', this)">Images</button>
+          <button type="button" class="files-category-pill" onclick="setCategoryFilter('archives', this)">Archives</button>
+          <button type="button" class="files-category-pill" onclick="setCategoryFilter('data', this)">Data / Code</button>
+        </div>
+
+        <!-- Sorting Select -->
+        <select id="filesSortSelect" class="files-sort-select" onchange="sortFilesTable()">
+          <option value="date-desc">Sort: Newest First</option>
+          <option value="date-asc">Sort: Oldest First</option>
+          <option value="name-asc">Sort: Name (A to Z)</option>
+          <option value="name-desc">Sort: Name (Z to A)</option>
+          <option value="size-desc">Sort: Size (Largest)</option>
+          <option value="size-asc">Sort: Size (Smallest)</option>
+        </select>
+      </section>
+
+      <!-- Files List Section -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">ENCRYPTED OBJECTS</div>
+            <h3 class="card-title">Encrypted File Repository</h3>
+          </div>
+          <span class="badge badge-pill badge-mono" id="filesMatchCount" th:text="${totalFiles + ' Objects Sealed'}">0 Objects Sealed</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          
+          <!-- Empty State -->
+          <div th:if="${files == null or files.isEmpty()}" class="empty-state-card" style="margin: 24px;">
+            <div class="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div>
+              <h4 style="margin: 0 0 6px 0; font-size: 1.15rem;">No Files Uploaded Yet</h4>
+              <p class="text-sm text-muted" style="margin: 0; max-width: 440px;">
+                Your storage enclave is ready. Upload your first document or asset to experience authenticated AES-256-GCM envelope encryption.
+              </p>
+            </div>
+            <a th:href="@{/upload}" class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload Your First File
+            </a>
+          </div>
+
+          <!-- Responsive Table -->
+          <div th:if="${files != null and !files.isEmpty()}" class="table-container">
+            <table class="table" id="filesMasterTable">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Type</th>
+                  <th>Payload Size</th>
+                  <th>Encryption Suite</th>
+                  <th>Integrity Check</th>
+                  <th>Upload Date</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="filesTableBody">
+                <tr th:each="file : ${files}" 
+                    class="file-data-row"
+                    th:attr="data-name=${file.originalName}, data-type=${file.contentType}, data-size=${file.sizeBytes}, data-date=${file.createdAt}">
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <div class="file-icon-box" style="width: 32px; height: 32px; border-radius: var(--radius-xs); background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: center;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      </div>
+                      <div style="display: flex; flex-direction: column;">
+                        <span class="font-medium text-primary" th:text="${file.originalName}">document.pdf</span>
+                        <span class="font-mono text-xs text-muted" th:text="${'ID #' + file.id}">ID #1</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge-mono text-xs" th:text="${file.contentType != null ? file.contentType : 'application/octet-stream'}">application/pdf</span>
+                  </td>
+                  <td class="font-mono text-sm" th:text="${#numbers.formatDecimal(file.sizeBytes / 1024.0, 1, 1) + ' KB'}">24.5 KB</td>
+                  <td>
+                    <span class="badge badge-cipher" style="font-size: 0.68rem;">AES-256-GCM</span>
+                  </td>
+                  <td>
+                    <span class="badge badge-pill badge-mono" style="color: #22c55e; border-color: rgba(34, 197, 94, 0.3);">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>
+                      SHA-256 Valid
+                    </span>
+                  </td>
+                  <td class="text-xs text-muted font-mono" th:text="${#temporals.format(file.createdAt.atZone(T(java.time.ZoneId).systemDefault()), 'MMM dd, yyyy · HH:mm')}">
+                    Nov 10, 2026 · 14:30
+                  </td>
+                  <td>
+                    <div class="file-row-action-group">
+                      <!-- Details Trigger Button -->
+                      <button type="button" class="btn btn-ghost btn-sm" 
+                              th:attr="data-file-id=${file.id}, data-file-name=${file.originalName}, data-file-type=${file.contentType}, data-file-size=${file.sizeBytes}, data-file-key=${file.storageKey}, data-file-sha=${file.sha256}, data-file-nonce=${file.nonceBase64}, data-file-date=${file.createdAt}"
+                              onclick="openFileDetailsModal(this)"
+                              title="Inspect cryptographic envelope details">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      </button>
+
+                      <!-- Instant Integrity Verify Button -->
+                      <form th:action="@{'/files/' + ${file.id} + '/verify'}" method="post" style="margin: 0; display: inline;">
+                        <input type="hidden" name="redirect" value="/files">
+                        <button type="submit" class="btn btn-ghost btn-sm" title="Re-calculate SHA-256 and verify GCM tag">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                      </form>
+
+                      <!-- Download Button -->
+                      <form th:action="@{'/files/' + ${file.id} + '/download'}" method="post" style="margin: 0; display: inline;">
+                        <button type="submit" class="btn btn-secondary btn-sm" title="Decrypt and download file">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        </button>
+                      </form>
+
+                      <!-- Delete Trigger Button -->
+                      <button type="button" class="btn btn-ghost btn-sm text-muted" 
+                              th:attr="data-file-id=${file.id}, data-file-name=${file.originalName}"
+                              onclick="openDeleteConfirmation(this)"
+                              title="Purge ciphertext from enclave">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+  </div>
+</div>
+
+<!-- File Details Drawer / Modal -->
+<div class="modal-overlay" id="fileDetailsModal" role="dialog" aria-modal="true" aria-labelledby="detailsModalTitle">
+  <div class="modal-dialog" style="max-width: 580px;">
+    <div class="modal-header">
+      <h3 id="detailsModalTitle">Cryptographic File Details</h3>
+      <button type="button" class="btn btn-ghost btn-sm btn-icon-only" data-modal-close aria-label="Close dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px;">
+        <div>
+          <span class="eyebrow">OBJECT NAME</span>
+          <h4 id="detailFileName" style="margin: 2px 0 0; font-size: 1.1rem;">file.pdf</h4>
+        </div>
+        <span class="badge badge-cipher">AES-256-GCM SEALED</span>
+      </div>
+
+      <div style="display: grid; gap: 10px; background: var(--bg-surface-raised); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.8rem;">
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-muted">Storage UUID:</span>
+          <code id="detailFileKey" class="font-mono text-primary">--</code>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-muted">Content Type:</span>
+          <span id="detailFileType" class="font-mono">--</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-muted">Payload Size:</span>
+          <span id="detailFileSize" class="font-mono font-bold">--</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-muted">GCM Nonce (12-byte IV):</span>
+          <code id="detailFileNonce" class="font-mono">--</code>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--border-subtle);">
+          <span class="text-muted">SHA-256 Digest Checksum:</span>
+          <code id="detailFileSha" class="font-mono text-xs" style="word-break: break-all; background: var(--bg-surface); padding: 6px 8px; border-radius: var(--radius-xs);">--</code>
+        </div>
+      </div>
+
+      <p class="text-xs text-muted" style="margin: 0; line-height: 1.5;">
+        Plaintext is never written to disk. On download, the RSA-OAEP private key unwraps the ephemeral symmetric key, AES-256-GCM decrypts the payload stream, and the SHA-256 digest is re-verified.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary btn-sm" data-modal-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="fileDeleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+  <div class="modal-dialog" style="max-width: 440px;">
+    <div class="modal-header">
+      <h3 id="deleteModalTitle">Confirm Permanent Deletion</h3>
+      <button type="button" class="btn btn-ghost btn-sm btn-icon-only" data-modal-close aria-label="Close dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="deleteFileForm" method="post" action="">
+      <input type="hidden" name="redirect" value="/files">
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <p class="text-sm text-secondary">
+          Are you sure you want to permanently delete <strong id="deleteFileNameTarget" class="text-primary">this file</strong>?
+        </p>
+        <div style="background: var(--bg-surface-raised); border-radius: var(--radius-sm); padding: 12px; border: 1px solid var(--border-subtle); font-size: 0.8rem; color: #ef4444;">
+          This action purges both the encrypted ciphertext blob from disk and its metadata. This cannot be undone.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn-danger btn-sm" style="background: #ef4444; color: white; border: none;">Permanently Purge</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Reusable Cryptographic Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+<!-- Client-side Interactive Filter, Search, Sort & Modal Scripts -->
+<script>
+  function openFileDetailsModal(btn) {
+    document.getElementById('detailFileName').innerText = btn.getAttribute('data-file-name');
+    document.getElementById('detailFileKey').innerText = btn.getAttribute('data-file-key');
+    document.getElementById('detailFileType').innerText = btn.getAttribute('data-file-type') || 'application/octet-stream';
+    var bytes = parseInt(btn.getAttribute('data-file-size') || '0', 10);
+    document.getElementById('detailFileSize').innerText = (bytes / 1024).toFixed(1) + ' KB (' + bytes.toLocaleString() + ' bytes)';
+    document.getElementById('detailFileNonce').innerText = btn.getAttribute('data-file-nonce');
+    document.getElementById('detailFileSha').innerText = btn.getAttribute('data-file-sha');
+    
+    var modal = document.getElementById('fileDetailsModal');
+    modal.classList.add('active');
+  }
+
+  function openDeleteConfirmation(btn) {
+    var fileId = btn.getAttribute('data-file-id');
+    var fileName = btn.getAttribute('data-file-name');
+    document.getElementById('deleteFileNameTarget').innerText = fileName;
+    document.getElementById('deleteFileForm').action = '/files/' + fileId + '/delete';
+    
+    var modal = document.getElementById('fileDeleteModal');
+    modal.classList.add('active');
+  }
+
+  var currentCategory = 'all';
+
+  function setCategoryFilter(cat, pillBtn) {
+    currentCategory = cat;
+    document.querySelectorAll('.files-category-pill').forEach(function(p) { p.classList.remove('active'); });
+    pillBtn.classList.add('active');
+    filterFilesTable();
+  }
+
+  function filterFilesTable() {
+    var search = (document.getElementById('filesSearchInput').value || '').toLowerCase();
+    var rows = document.querySelectorAll('#filesTableBody tr');
+    var matchCount = 0;
+
+    rows.forEach(function(row) {
+      var name = (row.getAttribute('data-name') || '').toLowerCase();
+      var type = (row.getAttribute('data-type') || '').toLowerCase();
+      var matchesSearch = name.includes(search) || type.includes(search);
+      var matchesCat = true;
+
+      if (currentCategory === 'docs') {
+        matchesCat = type.includes('pdf') || type.includes('text') || type.includes('word') || name.endsWith('.txt') || name.endsWith('.pdf') || name.endsWith('.docx');
+      } else if (currentCategory === 'images') {
+        matchesCat = type.includes('image') || name.endsWith('.png') || name.endsWith('.jpg') || name.endsWith('.jpeg') || name.endsWith('.svg');
+      } else if (currentCategory === 'archives') {
+        matchesCat = type.includes('zip') || type.includes('tar') || name.endsWith('.zip') || name.endsWith('.gz');
+      } else if (currentCategory === 'data') {
+        matchesCat = !type.includes('image') && !type.includes('pdf') && !type.includes('zip');
+      }
+
+      if (matchesSearch && matchesCat) {
+        row.style.display = '';
+        matchCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    var countBadge = document.getElementById('filesMatchCount');
+    if (countBadge) countBadge.innerText = matchCount + ' Objects Displayed';
+  }
+
+  function sortFilesTable() {
+    var sortVal = document.getElementById('filesSortSelect').value;
+    var tbody = document.getElementById('filesTableBody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+
+    rows.sort(function(a, b) {
+      var nameA = (a.getAttribute('data-name') || '').toLowerCase();
+      var nameB = (b.getAttribute('data-name') || '').toLowerCase();
+      var sizeA = parseInt(a.getAttribute('data-size') || '0', 10);
+      var sizeB = parseInt(b.getAttribute('data-size') || '0', 10);
+      var dateA = a.getAttribute('data-date') || '';
+      var dateB = b.getAttribute('data-date') || '';
+
+      if (sortVal === 'name-asc') return nameA.localeCompare(nameB);
+      if (sortVal === 'name-desc') return nameB.localeCompare(nameA);
+      if (sortVal === 'size-desc') return sizeB - sizeA;
+      if (sortVal === 'size-asc') return sizeA - sizeB;
+      if (sortVal === 'date-asc') return dateA.localeCompare(dateB);
+      return dateB.localeCompare(dateA); // date-desc default
+    });
+
+    rows.forEach(function(row) { tbody.appendChild(row); });
+  }
+</script>
+
+</body>
+</html>

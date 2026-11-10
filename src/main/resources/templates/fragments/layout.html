@@ -3,7 +3,7 @@
 <head th:fragment="html-head(pageTitle)">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title th:text="${pageTitle != null ? pageTitle + ' · V-GRT Secure Cloud' : 'V-GRT Secure Cloud'}">V-GRT Secure Cloud</title>
+  <title th:text="${pageTitle != null ? pageTitle + ' · V-GRT Enterprise Cloud Security' : 'V-GRT Enterprise Cloud Security'}">V-GRT Enterprise Cloud Security</title>
   
   <!-- Anti-flicker Theme Script -->
   <script>
@@ -33,7 +33,7 @@
 
     <div class="sidebar-content">
       <div class="nav-group">
-        <div class="nav-group-title">Platform</div>
+        <div class="nav-group-title">Core Platform</div>
         <ul class="nav-list">
           <li class="nav-item" th:classappend="${activeNav == 'home'} ? 'active' : ''">
             <a th:href="@{/}">
@@ -53,13 +53,32 @@
             </a>
           </li>
 
-          <li class="nav-item" th:classappend="${activeNav == 'vault'} ? 'active' : ''">
-            <a th:href="@{/vault}">
+          <li class="nav-item" th:classappend="${activeNav == 'files'} ? 'active' : ''">
+            <a th:href="@{/files}">
               <span class="nav-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
               </span>
-              <span>Personal Vault</span>
+              <span>My Encrypted Files</span>
               <span class="nav-badge" th:if="${files != null}" th:text="${#lists.size(files)}">0</span>
+            </a>
+          </li>
+
+          <li class="nav-item" th:classappend="${activeNav == 'upload'} ? 'active' : ''">
+            <a th:href="@{/upload}">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </span>
+              <span>Secure Upload</span>
+            </a>
+          </li>
+
+          <li class="nav-item" th:classappend="${activeNav == 'security'} ? 'active' : ''">
+            <a th:href="@{/security}">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </span>
+              <span>Security Center</span>
+              <span class="badge badge-cipher" style="font-size:0.58rem; padding: 2px 6px;">SHIELD</span>
             </a>
           </li>
           
@@ -85,14 +104,14 @@
       </div>
 
       <div class="nav-group">
-        <div class="nav-group-title">Documentation & Insights</div>
+        <div class="nav-group-title">Documentation & Architecture</div>
         <ul class="nav-list">
           <li class="nav-item" th:classappend="${activeNav == 'about'} ? 'active' : ''">
             <a th:href="@{/about}">
               <span class="nav-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </span>
-              <span>About Project</span>
+              <span>About Platform</span>
             </a>
           </li>
           <li class="nav-item" th:classappend="${activeNav == 'methodology'} ? 'active' : ''">
@@ -116,7 +135,7 @@
               <span class="nav-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
               </span>
-              <span>Design System</span>
+              <span>Design Tokens</span>
             </a>
           </li>
         </ul>
@@ -129,9 +148,9 @@
         <div class="telemetry-row">
           <div class="telemetry-indicator">
             <span class="pulse-dot"></span>
-            <span>V-GRT L3 Isolation</span>
+            <span>V-GRT L3 Enclave</span>
           </div>
-          <span class="badge badge-pill badge-mono" style="font-size: 0.62rem;">ACTIVE</span>
+          <span class="badge badge-pill badge-mono" style="font-size: 0.62rem;">PROTECTED</span>
         </div>
         <div class="telemetry-meta">
           AES-256-GCM + RSA-OAEP
@@ -185,9 +204,17 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
             Security Dashboard
           </a>
-          <a th:href="@{/vault}" class="dropdown-item">
+          <a th:href="@{/files}" class="dropdown-item">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            Personal Vault
+            My Encrypted Files
+          </a>
+          <a th:href="@{/upload}" class="dropdown-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Secure Upload
+          </a>
+          <a th:href="@{/security}" class="dropdown-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Security Center
           </a>
           <a th:if="${isAdmin}" th:href="@{/admin/audit}" class="dropdown-item">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
@@ -218,16 +245,18 @@
   <!-- Reusable Common Footer -->
   <footer th:fragment="footer" class="app-footer">
     <div class="footer-credits">
-      <span>V-GRT Cloud Data Security Enhancement System</span>
+      <span>V-GRT Cloud Data Security Platform</span>
       <span class="text-muted">·</span>
-      <span class="text-muted">Major Project Reference Prototype</span>
+      <span class="text-muted">Enterprise Cryptographic Enclave Architecture</span>
     </div>
     <div class="footer-tags">
       <span><strong>V</strong>irtualization</span>
       <span>·</span>
       <span><strong>G</strong>overnance</span>
       <span>·</span>
-      <span><strong>R</strong>eliability & <strong>T</strong>rust</span>
+      <span><strong>R</strong>isk Assessment</span>
+      <span>·</span>
+      <span><strong>T</strong>rustworthy Security</span>
     </div>
   </footer>
 
@@ -235,7 +264,7 @@
   <div th:fragment="crypto-modal" class="modal-overlay" id="cryptoModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3 id="modalTitle">V-GRT Security & Cryptography</h3>
+        <h3 id="modalTitle">V-GRT Security &amp; Cryptography</h3>
         <button type="button" class="btn btn-ghost btn-sm btn-icon-only" data-modal-close aria-label="Close dialog">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
