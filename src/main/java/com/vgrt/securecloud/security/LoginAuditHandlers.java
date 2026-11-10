@@ -19,7 +19,7 @@ public class LoginAuditHandlers implements AuthenticationSuccessHandler, Authent
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth)
             throws IOException, ServletException {
         audit.record(auth.getName(), "LOGIN", null, "SUCCESS", "User authenticated");
-        response.sendRedirect("/");
+        response.sendRedirect("/dashboard");
     }
 
     @Override

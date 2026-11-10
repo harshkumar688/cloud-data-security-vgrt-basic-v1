@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" width="100%" height="100%" style="background-color: #09090b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'JetBrains Mono', monospace;">
+  <defs>
+    <!-- Gradient for implemented cards -->
+    <linearGradient id="cardGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#121214" />
+    </linearGradient>
+    <!-- Gradient for roadmap cards -->
+    <linearGradient id="cardGradRoadmap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141416" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#0e0e10" stop-opacity="0.9" />
+    </linearGradient>
+    <!-- Shadow filter for subtle 3D elevation -->
+    <filter id="shadow3d" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <!-- Glow filter for flow indicators -->
+    <filter id="pulseGlow">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <!-- Arrow marker definition -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#a1a1aa" />
+    </marker>
+    <marker id="arrowDashed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#71717a" />
+    </marker>
+  </defs>
+
+  <!-- Background Grid -->
+  <rect width="100%" height="100%" fill="#09090b"/>
+  <g opacity="0.07" stroke="#ffffff" stroke-width="0.5">
+    <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40"/>
+    </pattern>
+    <rect width="100%" height="100%" fill="url(#gridPattern)"/>
+  </g>
+
+  <!-- Title & Metadata Header -->
+  <g transform="translate(60, 48)">
+    <text x="0" y="0" fill="#a1a1aa" font-size="11" font-weight="600" letter-spacing="1.8" font-family="'JetBrains Mono', monospace">V-GRT METHODOLOGY REFERENCE ARCHITECTURE</text>
+    <text x="0" y="28" fill="#f4f4f5" font-size="22" font-weight="700" letter-spacing="-0.5">End-to-End Cryptographic Data Pipeline</text>
+    <text x="0" y="48" fill="#71717a" font-size="12">Data flow &amp; control trajectory from client ingress through zero-exposure envelope storage and audit verification.</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(850, 42)">
+    <rect x="0" y="0" width="290" height="56" rx="8" fill="#141416" stroke="#27272a" stroke-width="1"/>
+    <!-- Implemented -->
+    <rect x="18" y="16" width="16" height="10" rx="2" fill="#27272a" stroke="#e4e4e7" stroke-width="1.5"/>
+    <text x="42" y="25" fill="#f4f4f5" font-size="11" font-weight="600">Active Implemented</text>
+    <circle cx="165" cy="21" r="3" fill="#22c55e" />
+    <text x="174" y="25" fill="#a1a1aa" font-size="10">Verified</text>
+    <!-- Roadmap -->
+    <rect x="18" y="34" width="16" height="10" rx="2" fill="#18181b" stroke="#71717a" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <text x="42" y="43" fill="#a1a1aa" font-size="11" font-weight="500">Proposed Roadmap</text>
+    <circle cx="165" cy="39" r="3" fill="#eab308" />
+    <text x="174" y="43" fill="#71717a" font-size="10">Design Phase</text>
+  </g>
+
+  <!-- ==================== ROW 1 (Nodes 1 to 5) ==================== -->
+  
+  <!-- 1. User -->
+  <g transform="translate(60, 130)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- User Icon -->
+    <path d="M 26 21 A 3.5 3.5 0 1 0 26 28 A 3.5 3.5 0 1 0 26 21 M 20 33 C 20 30 23 29 26 29 C 29 29 32 30 32 33" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 01</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Client / User</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">TLS 1.3 / Browser Ingress</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 250 185 L 288 185" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="269" y="177" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">POST</text>
+
+  <!-- 2. Authentication -->
+  <g transform="translate(295, 130)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Lock Icon -->
+    <path d="M 21 24 L 31 24 L 31 31 L 21 31 Z M 23 24 L 23 21 C 23 19 29 19 29 21 L 29 24" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 02</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Authentication</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">BCrypt-12 &amp; Spring Session</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 485 185 L 523 185" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="504" y="177" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Principal</text>
+
+  <!-- 3. Authorization -->
+  <g transform="translate(530, 130)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Shield Icon -->
+    <path d="M 21 19 L 26 17 L 31 19 L 31 26 C 31 29 26 32 26 32 C 26 32 21 29 21 26 Z" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 03</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Authorization</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">RBAC (USER / ADMIN)</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 720 185 L 758 185" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="739" y="177" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Role OK</text>
+
+  <!-- 4. Tenant Isolation -->
+  <g transform="translate(765, 130)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Layers / Isolation Icon -->
+    <path d="M 26 18 L 33 22 L 26 26 L 19 22 Z M 19 25 L 26 29 L 33 25 M 19 28 L 26 32 L 33 28" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 04</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Tenant Isolation</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">Logical Vault Boundary</text>
+  </g>
+
+  <!-- Arrow 4 -> 5 -->
+  <path d="M 955 185 L 993 185" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="974" y="177" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Scoped</text>
+
+  <!-- 5. Encryption -->
+  <g transform="translate(1000, 130)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Key / Cipher Icon -->
+    <path d="M 27 21 L 32 26 M 30 24 L 32 22 M 25 23 A 4 4 0 1 1 21 19 L 26 24" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 05</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Hybrid Encryption</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">AES-GCM-256 + RSA-OAEP</text>
+  </g>
+
+  <!-- Connecting Bus: 5 -> 6 (Curve down to Row 2) -->
+  <path d="M 1095 240 L 1095 295 L 1095 350" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="1055" y="280" width="80" height="22" rx="4" fill="#18181b" stroke="#3f3f46" stroke-width="1"/>
+  <text x="1095" y="295" fill="#e4e4e7" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Ciphertext + IV</text>
+
+  <!-- ==================== ROW 2 (Nodes 6 to 10 - Right to Left Flow) ==================== -->
+
+  <!-- 6. Private Storage -->
+  <g transform="translate(1000, 360)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Hard Drive Icon -->
+    <path d="M 20 22 C 20 20 32 20 32 22 L 32 29 C 32 31 20 31 20 29 Z M 20 25 C 20 27 32 27 32 25" stroke="#f4f4f5" stroke-width="1.5" fill="none"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 06</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Private Storage</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">Encrypted Blob Store</text>
+  </g>
+
+  <!-- Arrow 6 -> 7 -->
+  <path d="M 1000 415 L 962 415" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="981" y="407" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Retrieve</text>
+
+  <!-- 7. Integrity Verification -->
+  <g transform="translate(765, 360)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Checkmark Badge Icon -->
+    <path d="M 21 26 L 24 29 L 31 22 M 26 18 A 8 8 0 1 0 26 34 A 8 8 0 1 0 26 18" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 07</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Integrity Check</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">SHA-256 Digest Match</text>
+  </g>
+
+  <!-- Arrow 7 -> 8 -->
+  <path d="M 765 415 L 727 415" stroke="#71717a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowDashed)"/>
+  <text x="746" y="407" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Telemetry</text>
+
+  <!-- 8. Risk Engine (ROADMAP) -->
+  <g transform="translate(530, 360)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradRoadmap)" stroke="#71717a" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#18181b"/>
+    <!-- Activity / Pulse Radar Icon -->
+    <path d="M 19 26 L 23 26 L 25 21 L 27 31 L 29 26 L 33 26" stroke="#a1a1aa" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="114" y="14" width="62" height="18" rx="4" fill="#eab308" fill-opacity="0.12" stroke="#eab308" stroke-width="1"/>
+    <text x="145" y="26" fill="#facc15" font-size="8" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ROADMAP</text>
+    <text x="14" y="56" fill="#71717a" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 08</text>
+    <text x="14" y="74" fill="#e4e4e7" font-size="15" font-weight="600">Risk Engine</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">Dynamic Risk Scoring</text>
+  </g>
+
+  <!-- Arrow 8 -> 9 -->
+  <path d="M 530 415 L 492 415" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="511" y="407" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Audit Feed</text>
+
+  <!-- 9. Audit Logs -->
+  <g transform="translate(295, 360)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradDark)" stroke="#e4e4e7" stroke-width="1.5"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#27272a"/>
+    <!-- Ledger Document Icon -->
+    <path d="M 21 18 L 28 18 L 31 21 L 31 32 L 21 32 Z M 24 23 L 28 23 M 24 27 L 28 27" stroke="#f4f4f5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="122" y="14" width="54" height="18" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-width="1"/>
+    <text x="149" y="26" fill="#4ade80" font-size="8.5" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ACTIVE</text>
+    <text x="14" y="56" fill="#a1a1aa" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 09</text>
+    <text x="14" y="74" fill="#ffffff" font-size="15" font-weight="600">Audit Ledger</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">Tamper-Evident History</text>
+  </g>
+
+  <!-- Arrow 9 -> 10 -->
+  <path d="M 295 415 L 257 415" stroke="#71717a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowDashed)"/>
+  <text x="276" y="407" fill="#71717a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', monospace">Metrics</text>
+
+  <!-- 10. Dashboard (ROADMAP) -->
+  <g transform="translate(60, 360)" filter="url(#shadow3d)">
+    <rect width="190" height="110" rx="10" fill="url(#cardGradRoadmap)" stroke="#71717a" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <rect x="14" y="14" width="24" height="24" rx="6" fill="#18181b"/>
+    <!-- Analytics Chart Icon -->
+    <path d="M 20 31 L 32 31 M 23 31 L 23 25 M 26 31 L 26 21 M 29 31 L 29 27" stroke="#a1a1aa" stroke-width="1.5" stroke-linecap="round"/>
+    <rect x="114" y="14" width="62" height="18" rx="4" fill="#eab308" fill-opacity="0.12" stroke="#eab308" stroke-width="1"/>
+    <text x="145" y="26" fill="#facc15" font-size="8" font-weight="700" text-anchor="middle" font-family="'JetBrains Mono', monospace">ROADMAP</text>
+    <text x="14" y="56" fill="#71717a" font-size="10" font-family="'JetBrains Mono', monospace">STAGE 10</text>
+    <text x="14" y="74" fill="#e4e4e7" font-size="15" font-weight="600">Sec Dashboard</text>
+    <text x="14" y="94" fill="#71717a" font-size="10.5">Unified Posture View</text>
+  </g>
+
+  <!-- ==================== DESCRIPTIVE ANNOTATION BARS ==================== -->
+
+  <g transform="translate(60, 520)">
+    <!-- Virtualization & Governance Tier -->
+    <rect x="0" y="0" width="540" height="110" rx="8" fill="#121214" stroke="#27272a" stroke-width="1"/>
+    <text x="20" y="26" fill="#a1a1aa" font-size="10" font-weight="600" font-family="'JetBrains Mono', monospace">TIER 1: IDENTITY, ACCESS &amp; TENANCY (V &amp; G)</text>
+    <text x="20" y="50" fill="#f4f4f5" font-size="13" font-weight="600">Virtualization &amp; Governance Boundary</text>
+    <text x="20" y="72" fill="#71717a" font-size="11.5">Strict per-tenant isolation ensures zero cross-workspace file leakage. Authorization enforcement</text>
+    <text x="20" y="90" fill="#71717a" font-size="11.5">evaluates roles and permits access solely to verified resource owners or compliance auditors.</text>
+
+    <!-- Cryptographic Storage & Trust Tier -->
+    <rect x="570" y="0" width="560" height="110" rx="8" fill="#121214" stroke="#27272a" stroke-width="1"/>
+    <text x="590" y="26" fill="#a1a1aa" font-size="10" font-weight="600" font-family="'JetBrains Mono', monospace">TIER 2: CIPHER MECHANICS &amp; AUDITABILITY (R &amp; T)</text>
+    <text x="590" y="50" fill="#f4f4f5" font-size="13" font-weight="600">Reliability, Cryptography &amp; Trust Layer</text>
+    <text x="590" y="72" fill="#71717a" font-size="11.5">Dual-envelope scheme: AES-256-GCM data key wrapped by RSA-OAEP master key. Downloads trigger</text>
+    <text x="590" y="90" fill="#71717a" font-size="11.5">mandatory SHA-256 integrity verification, recording structured immutable events in the audit ledger.</text>
+  </g>
+
+  <!-- Footer Technical Verification Line -->
+  <g transform="translate(60, 680)">
+    <line x1="0" y1="0" x2="1080" y2="0" stroke="#27272a" stroke-width="1"/>
+    <text x="0" y="22" fill="#52525b" font-size="10.5" font-family="'JetBrains Mono', monospace">PIPELINE VERIFICATION: 8 IMPLEMENTED CORE COMPONENTS · 2 RESEARCH/ROADMAP PHASES · ZERO MOCK DATA DISCLOSURE</text>
+    <text x="1080" y="22" fill="#52525b" font-size="10.5" text-anchor="end" font-family="'JetBrains Mono', monospace">SPEC V-GRT 1.0</text>
+  </g>
+</svg>

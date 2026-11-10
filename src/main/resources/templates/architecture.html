@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('System Architecture')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('architecture')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Documentation', 'System Architecture')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="page-header-content">
+          <div class="eyebrow">SYSTEM TOPOLOGY &amp; DATA PIPELINE</div>
+          <div class="page-header-title">
+            <h1>System Architecture</h1>
+            <span class="badge badge-cipher">End-to-End Pipeline</span>
+          </div>
+          <p>Complete structural breakdown of the V-GRT platform showing client ingress, authentication, envelope encryption, isolated persistence, and audit logging.</p>
+        </div>
+        <div class="page-header-actions">
+          <a th:href="@{/architecture-diagram.svg}" target="_blank" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Raw Vector SVG
+          </a>
+          <button type="button" class="btn btn-primary" data-modal-target="cryptoModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Cryptographic Specs
+          </button>
+        </div>
+      </section>
+
+      <!-- Architecture Vector Diagram Viewer -->
+      <section class="arch-diagram-viewer">
+        <div class="arch-diagram-header">
+          <div class="arch-diagram-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            <span>V-GRT END-TO-END PIPELINE DIAGRAM</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px; font-size: 0.75rem;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #a1a1aa;">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+              Solid: Implemented (8)
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #71717a;">
+              <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #eab308;"></span>
+              Dashed: Roadmap (2)
+            </span>
+          </div>
+        </div>
+        <div style="padding: 16px; background: #09090b; overflow-x: auto;">
+          <img th:src="@{/architecture-diagram.svg}" alt="V-GRT System Architecture Pipeline Diagram" class="arch-diagram-img" style="min-width: 800px; max-width: 100%;">
+        </div>
+      </section>
+
+      <!-- Component Connection Deep Dive -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">COMPONENT SEQUENCE &amp; CONNECTIVITY</div>
+            <h3 class="card-title">Data &amp; Control Flow Connections</h3>
+          </div>
+          <span class="badge badge-pill badge-mono">Linear Execution Chain</span>
+        </div>
+        <div class="card-body">
+          <p class="text-sm text-secondary" style="margin-bottom: 24px; line-height: 1.6;">
+            The V-GRT architecture enforces a strict 10-stage sequential flow. Every operation—whether a file upload, inspection, or download—must traverse this deterministic path to guarantee end-to-end security:
+          </p>
+
+          <div class="arch-flow-stepper">
+
+            <!-- Node 1 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">01</div>
+              <div class="arch-node-body">
+                <h4>Client / User Layer</h4>
+                <p>
+                  <strong>Connection:</strong> The user accesses the web client over TLS 1.3. Browser sessions initiate HTTP POST/GET requests carrying session cookies or credential payloads. Zero sensitive cryptography is entrusted to vulnerable client JavaScript; all critical cryptographic operations are executed in secure server enclave memory.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 2 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">02</div>
+              <div class="arch-node-body">
+                <h4>Authentication Engine</h4>
+                <p>
+                  <strong>Connection:</strong> Intercepts client credentials via Spring Security <code>DaoAuthenticationProvider</code>. Passwords are verified against stored <code>BCrypt</code> hashes (work factor 12). Successful authentication issues an HTTP session token; failed attempts immediately trigger security event logging.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 3 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">03</div>
+              <div class="arch-node-body">
+                <h4>Authorization &amp; RBAC</h4>
+                <p>
+                  <strong>Connection:</strong> Evaluates the authenticated principal against Spring Security <code>SecurityFilterChain</code> rules. Distinguishes standard tenant roles (<code>ROLE_USER</code>) from administrative governance roles (<code>ROLE_ADMIN</code>). Unauthenticated or unauthorized requests are rejected at the servlet filter boundary before controller execution.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 4 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">04</div>
+              <div class="arch-node-body">
+                <h4>Tenant Isolation (Virtualization)</h4>
+                <p>
+                  <strong>Connection:</strong> Enforces logical compartmentation in the data tier. The authenticated username is injected into repository query parameters. Database operations are strictly constrained such that User A cannot read, modify, or infer the existence of User B's files.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 5 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">05</div>
+              <div class="arch-node-body">
+                <h4>Hybrid Envelope Encryption</h4>
+                <p>
+                  <strong>Connection:</strong> The uploaded byte stream is consumed by the <code>CryptoService</code>. An ephemeral 256-bit symmetric key is generated via <code>SecureRandom</code>. File bytes are encrypted into ciphertext using <strong>AES-256-GCM</strong> (with a 12-byte IV and 128-bit authentication tag). The AES key is wrapped via <strong>RSA-OAEP-2048</strong> before committing to persistence.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 6 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">06</div>
+              <div class="arch-node-body">
+                <h4>Private Encrypted Storage</h4>
+                <p>
+                  <strong>Connection:</strong> Encrypted file payloads, wrapped symmetric keys, initialization vectors, and metadata are persisted in the isolated database layer. At no point are unencrypted file bytes written to disk or stored in secondary storage tables.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 7 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">07</div>
+              <div class="arch-node-body">
+                <h4>Integrity Verification Engine</h4>
+                <p>
+                  <strong>Connection:</strong> During retrieval, the RSA private key unwraps the AES data key, and AES-256-GCM decrypts the payload. The plaintext byte stream is immediately hashed via SHA-256 and compared against the original upload checksum. Any discrepancy halts the stream and registers a critical integrity breach alert.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 8 -->
+            <div class="arch-flow-node roadmap-node">
+              <div class="arch-node-index">08</div>
+              <div class="arch-node-body">
+                <h4>Risk Engine (Threat &amp; Anomaly Evaluation)</h4>
+                <p>
+                  <strong>Connection:</strong> Continuous telemetry ingestion point. While current code implements deterministic failure logging and checksum anomaly traps, the planned automated Risk Engine will aggregate access velocity, geolocational divergence, and brute-force indicators into an automated risk score to throttle suspect sessions.
+                </p>
+              </div>
+              <span class="badge" style="border: 1px dashed var(--border-strong); color: #eab308;">Proposed Roadmap</span>
+            </div>
+
+            <!-- Node 9 -->
+            <div class="arch-flow-node">
+              <div class="arch-node-index">09</div>
+              <div class="arch-node-body">
+                <h4>Forensic Audit Ledger</h4>
+                <p>
+                  <strong>Connection:</strong> Every lifecycle transition—successful authentication, failed password attempts, file upload encryption, and integrity-verified downloads—synchronously records an immutable event in the audit database table with user identity, client IP, action type, and UTC timestamps.
+                </p>
+              </div>
+              <span class="badge badge-cipher">Implemented</span>
+            </div>
+
+            <!-- Node 10 -->
+            <div class="arch-flow-node roadmap-node">
+              <div class="arch-node-index">10</div>
+              <div class="arch-node-body">
+                <h4>Unified Security Dashboard</h4>
+                <p>
+                  <strong>Connection:</strong> Visualization tier. Currently administrators review operational telemetry through the raw tabular Audit Ledger (<code>/admin/audit</code>). The planned Security Dashboard will present time-series charts, tenant threat heatmaps, and encryption throughput graphs.
+                </p>
+              </div>
+              <span class="badge" style="border: 1px dashed var(--border-strong); color: #eab308;">Proposed Roadmap</span>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Technical Implementation Summary Table -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">ENGINEERING SPECIFICATION</div>
+            <h3 class="card-title">Implementation Matrix</h3>
+          </div>
+          <span class="badge badge-pill badge-mono">8 of 10 Production Ready</span>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Layer</th>
+                  <th>Underlying Technology</th>
+                  <th>Current State</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-mono text-sm font-bold">1. Client / User</td>
+                  <td>Ingress</td>
+                  <td>Modern Web Browser, TLS 1.3</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">2. Authentication</td>
+                  <td>Identity</td>
+                  <td>Spring Security 6, BCrypt (Work Factor 12)</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">3. Authorization</td>
+                  <td>Access Control</td>
+                  <td>Role-Based Access Control (ROLE_USER, ROLE_ADMIN)</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">4. Tenant Isolation</td>
+                  <td>Virtualization</td>
+                  <td>Spring Data JPA Scoped Repository Queries</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">5. Encryption</td>
+                  <td>Cryptography</td>
+                  <td>AES-256-GCM + RSA-OAEP-2048 Envelope Key Wrapping</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">6. Private Storage</td>
+                  <td>Persistence</td>
+                  <td>H2 Database (Ciphertext BLOBs + Wrapped Keys)</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">7. Integrity Verification</td>
+                  <td>Integrity</td>
+                  <td>SHA-256 Digest Matching on Decryption Stream</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">8. Risk Engine</td>
+                  <td>Threat Assessment</td>
+                  <td>Deterministic Event Trap (Active) / Dynamic Model (Roadmap)</td>
+                  <td><span class="badge" style="border: 1px dashed var(--border-strong); color: #eab308;">Design Roadmap</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">9. Audit Logs</td>
+                  <td>Governance</td>
+                  <td>JPA AuditEvent Table with IP &amp; Action Timestamps</td>
+                  <td><span class="badge badge-cipher">Active</span></td>
+                </tr>
+                <tr>
+                  <td class="font-mono text-sm font-bold">10. Dashboard</td>
+                  <td>Telemetry</td>
+                  <td>Tabular Audit Ledger (Active) / Visual Analytics (Roadmap)</td>
+                  <td><span class="badge" style="border: 1px dashed var(--border-strong); color: #eab308;">Design Roadmap</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+  </div>
+</div>
+
+<!-- Reusable Cryptographic Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+</body>
+</html>

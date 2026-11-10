@@ -3,49 +3,522 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sample dashboard · V-GRT Secure Cloud</title>
+  <title>Design System & UI Components · V-GRT Secure Cloud</title>
+  
+  <script>
+    (function() {
+      var saved = localStorage.getItem('vgrt_theme_preference');
+      var theme = saved || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
   <link rel="stylesheet" href="/app.css">
-  <style>
-    .sample-banner{padding:16px 18px;border:1px solid #ead9a9;background:#fff8e5;color:#6d5317;border-radius:11px;margin-bottom:28px;line-height:1.55}
-    .sample-banner strong{display:block;margin-bottom:3px}
-    .sample-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:34px}
-    .sample-stat{padding:20px 21px;background:#fff;border:1px solid var(--line);border-radius:12px}
-    .sample-stat span{color:var(--muted);font-size:.8rem}.sample-stat strong{display:block;font:800 1.8rem Manrope,sans-serif;color:var(--deep);margin-top:8px}
-    .sample-events{margin-top:34px}.sample-label{font-size:.71rem;font-weight:700;letter-spacing:.12em;color:var(--teal)}
-    @media(max-width:700px){.sample-grid{grid-template-columns:1fr}}
-  </style>
+  <script defer src="/app.js"></script>
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="/sample-output.html"><span class="brand-mark">V</span><span>V-GRT <small>SECURE CLOUD</small></span></a>
-  <nav><span class="user-chip">Demo account</span><span class="secure-pill"><span></span> Sample view</span></nav>
-</header>
-<main class="container">
-  <section class="welcome">
-    <div><p class="eyebrow">CLOUD DATA SECURITY ENHANCEMENT</p><h1>Sample dashboard</h1><p class="muted">A preview of the basic V-GRT file workspace.</p></div>
-  </section>
-  <aside class="sample-banner"><strong>Static sample output</strong>Everything on this page is example data. Sign-in, upload, encryption, download, authorization and audit recording are not running in this preview.</aside>
-  <section class="sample-grid" aria-label="Example summary">
-    <article class="sample-stat"><span>Example users</span><strong>2</strong></article>
-    <article class="sample-stat"><span>Example stored files</span><strong>2</strong></article>
-    <article class="sample-stat"><span>Example denied requests</span><strong>1</strong></article>
-  </section>
-  <section class="files-section">
-    <div class="section-heading"><div><p class="eyebrow">OWNER ONLY · EXAMPLE DATA</p><h2>Stored files</h2></div><span class="count">2 sample files</span></div>
-    <div class="file-list">
-      <article class="file-row"><div class="file-icon">▧</div><div class="file-info"><strong>Quarterly-report.pdf</strong><span>1,482,016 bytes · demo.user · Sample only</span></div><span class="secure-pill"><span></span> Encrypted sample</span></article>
-      <article class="file-row"><div class="file-icon">▧</div><div class="file-info"><strong>Project-notes.txt</strong><span>8,240 bytes · demo.user · Sample only</span></div><span class="secure-pill"><span></span> Encrypted sample</span></article>
+<div class="app-shell">
+
+  <!-- Sidebar Navigation -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="/sample-output.html" class="brand-link">
+        <div class="brand-glyph">V</div>
+        <div class="brand-title">
+          <span>V-GRT</span>
+          <span>SECURE CLOUD</span>
+        </div>
+      </a>
     </div>
-  </section>
-  <section class="sample-events">
-    <div class="section-heading"><div><p class="eyebrow">EXAMPLE ENTRIES</p><h2>Recent activity</h2></div></div>
-    <div class="panel table-wrap"><table><thead><tr><th>Time</th><th>Actor</th><th>Event</th><th>Outcome</th><th>Example detail</th></tr></thead><tbody>
-      <tr><td>2026-10-31 10:42 UTC</td><td>demo.user</td><td>LOGIN</td><td><span class="status ok">SUCCESS</span></td><td>Sample sign-in event</td></tr>
-      <tr><td>2026-10-31 10:46 UTC</td><td>demo.user</td><td>FILE_DOWNLOAD</td><td><span class="status ok">SUCCESS</span></td><td>Sample authorized download</td></tr>
-      <tr><td>2026-10-31 10:50 UTC</td><td>demo.other</td><td>FILE_DOWNLOAD</td><td><span class="status">DENIED</span></td><td>Sample file ownership denial</td></tr>
-    </tbody></table></div>
-  </section>
-  <footer class="page-footer">V-GRT prototype · virtualization is logical per-account resource isolation.</footer>
-</main>
+
+    <div class="sidebar-content">
+      <div class="nav-group">
+        <div class="nav-group-title">Application Views</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="/">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <span>Personal Vault</span>
+              <span class="nav-badge">Live</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/admin/audit">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </span>
+              <span>Audit Ledger</span>
+              <span class="nav-badge">Admin</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Design System</div>
+        <ul class="nav-list">
+          <li class="nav-item active">
+            <a href="#overview">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </span>
+              <span>Components</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#palette">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+              </span>
+              <span>Monochrome Palette</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#skeletons">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
+              </span>
+              <span>Skeletons & States</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Security Telemetry in Sidebar -->
+    <div class="sidebar-footer">
+      <div class="security-telemetry-card">
+        <div class="telemetry-row">
+          <div class="telemetry-indicator">
+            <span class="pulse-dot"></span>
+            <span>Design Tokens</span>
+          </div>
+          <span class="badge badge-pill badge-mono" style="font-size: 0.62rem;">V1.0</span>
+        </div>
+        <div class="telemetry-meta">
+          Light & Dark Monochrome
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+
+    <!-- Topbar Header -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <button type="button" class="mobile-menu-trigger" aria-label="Toggle navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+        <nav class="topbar-breadcrumbs" aria-label="Breadcrumb">
+          <span class="breadcrumb-root">Design System</span>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">Monochrome Component Library</span>
+        </nav>
+      </div>
+
+      <div class="topbar-right">
+        <span class="badge badge-cipher" style="display: none; @media(min-width: 640px){ display: inline-flex; }">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#22c55e;"></span>
+          Monochrome Active
+        </span>
+
+        <!-- Theme Toggle -->
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+
+        <!-- Dropdown Component -->
+        <div class="dropdown">
+          <button type="button" class="dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+            <div class="user-avatar-glyph">A</div>
+            <span>Architect</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <div class="dropdown-menu">
+            <div class="dropdown-header">
+              <div class="dropdown-header-user">Lead Designer</div>
+              <div class="dropdown-header-role">SYSTEMS & ARCHITECTURE</div>
+            </div>
+            <a href="/" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              Go to Vault
+            </a>
+            <button type="button" class="dropdown-item" data-modal-target="demoModal">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Launch Modal
+            </button>
+            <div class="dropdown-divider"></div>
+            <a href="/login" class="dropdown-item danger">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Container -->
+    <main class="page-container" id="overview">
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="page-header-content">
+          <div class="eyebrow">PREMIUM MONOCHROME DESIGN SYSTEM</div>
+          <div class="page-header-title">
+            <h1>Design System & UI Components</h1>
+            <span class="badge badge-cipher">v1.0 Specifications</span>
+          </div>
+          <p>Architectural design system built with pure black, deep charcoal, neutral slate, and stark white. Optimized for enterprise cybersecurity workflows with subtle 3D depth and instant light/dark mode switching.</p>
+        </div>
+        <div class="page-header-actions">
+          <button type="button" class="btn btn-secondary" data-modal-target="demoModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            Interactive Modal Demo
+          </button>
+          <a href="/" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Open Live Application
+          </a>
+        </div>
+      </section>
+
+      <!-- Stat Cards -->
+      <section class="stat-card-grid">
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Primary Aesthetic</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div class="stat-card-value">Monochrome</div>
+          <div class="stat-card-sub text-muted">Black, Charcoal, Greys, White</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Elevation & Depth</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="stat-card-value">Subtle 3D</div>
+          <div class="stat-card-sub text-muted">Layered shadows & inset rims</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Themes Supported</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </div>
+          <div class="stat-card-value">Dark & Light</div>
+          <div class="stat-card-sub text-muted">Persisted in local storage</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Breakpoints</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="stat-card-value">3 Tiers</div>
+          <div class="stat-card-sub text-muted">Desktop, Tablet, Mobile Drawer</div>
+        </article>
+      </section>
+
+      <!-- 1. Monochrome Palette Section -->
+      <section class="card" id="palette">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">COLOR SPECIFICATION</div>
+            <h3>Monochrome Palette Tokens</h3>
+          </div>
+          <span class="badge badge-mono">Tokens</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px;">
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #09090b; color: #fff;">
+              <div class="font-mono text-xs">#09090b</div>
+              <strong class="text-sm">Obsidian Canvas</strong>
+            </div>
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #121215; color: #fff;">
+              <div class="font-mono text-xs">#121215</div>
+              <strong class="text-sm">Charcoal Surface</strong>
+            </div>
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #18181b; color: #fff;">
+              <div class="font-mono text-xs">#18181b</div>
+              <strong class="text-sm">Raised Container</strong>
+            </div>
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #27272a; color: #fff;">
+              <div class="font-mono text-xs">#27272a</div>
+              <strong class="text-sm">Border Default</strong>
+            </div>
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #71717a; color: #fff;">
+              <div class="font-mono text-xs">#71717a</div>
+              <strong class="text-sm">Muted Slate</strong>
+            </div>
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #a1a1aa; color: #000;">
+              <div class="font-mono text-xs">#a1a1aa</div>
+              <strong class="text-sm">Secondary Grey</strong>
+            </div>
+            <div style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-default); background: #ffffff; color: #000;">
+              <div class="font-mono text-xs">#ffffff</div>
+              <strong class="text-sm">Pure White Contrast</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Reusable Buttons -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">CONTROLS</div>
+            <h3>Reusable Button System</h3>
+          </div>
+          <span class="badge badge-mono">.btn</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+          <div>
+            <h4 class="text-sm text-muted" style="margin-bottom: 12px;">Button Variants</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <button type="button" class="btn btn-primary">Primary Solid</button>
+              <button type="button" class="btn btn-secondary">Secondary Outline</button>
+              <button type="button" class="btn btn-ghost">Ghost Subtle</button>
+              <button type="button" class="btn btn-danger">Danger Action</button>
+              <button type="button" class="btn btn-secondary btn-icon-only" aria-label="Settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </button>
+              <button type="button" class="btn btn-secondary" disabled>Disabled</button>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm text-muted" style="margin-bottom: 12px;">Button Sizes</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <button type="button" class="btn btn-secondary btn-sm">Small (.btn-sm)</button>
+              <button type="button" class="btn btn-secondary">Default Standard</button>
+              <button type="button" class="btn btn-secondary btn-lg">Large (.btn-lg)</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Form Inputs & Dropzone -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">FORM SYSTEM</div>
+            <h3>Inputs, Selects & Dropzones</h3>
+          </div>
+          <span class="badge badge-mono">Controls</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;">
+            <div class="form-group">
+              <label class="form-label" for="demoTextInput">
+                <span>Standard Text Input</span>
+                <span class="form-hint">Focus ring active</span>
+              </label>
+              <input class="input-text" id="demoTextInput" placeholder="Enter file tag or identifier...">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="demoSelectInput">
+                <span>Dropdown Select</span>
+                <span class="form-hint">Monochrome styled</span>
+              </label>
+              <select class="input-select" id="demoSelectInput">
+                <option>AES-256-GCM (Hardware Accelerated)</option>
+                <option>RSA-OAEP-2048 Envelope</option>
+                <option>SHA-256 Digest Verification</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Stylized Dropzone -->
+          <div class="form-group">
+            <label class="form-label">Stylized File Drag-and-Drop Area</label>
+            <div class="file-dropzone">
+              <input type="file" aria-label="Dropzone demo">
+              <div class="dropzone-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <div>
+                <p class="dropzone-filename"><strong>Drag and drop files here</strong> or click to browse</p>
+                <p class="text-xs text-muted">Supports any object format up to 10 MB with 3D elevation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Badges & Status Indicators -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">TAGS & BADGES</div>
+            <h3>Monochrome Badges & Indicators</h3>
+          </div>
+          <span class="badge badge-mono">.badge</span>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <span class="badge">Default Badge</span>
+            <span class="badge badge-pill">Pill Shape</span>
+            <span class="badge badge-mono">font-mono-tag</span>
+            <span class="badge badge-cipher">
+              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#22c55e;"></span>
+              Cipher Active
+            </span>
+            <span class="badge badge-success">Success / Verified</span>
+            <span class="badge badge-danger">Denied / Revoked</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Data Tables -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">DATA PRESENTATION</div>
+            <h3>Monochrome High-Density Table</h3>
+          </div>
+          <span class="badge badge-mono">.table</span>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <div class="table-container" style="border: none; border-radius: 0;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Object</th>
+                  <th>Encryption Spec</th>
+                  <th>Digest</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong class="text-primary">financial-audit-2026.pdf</strong>
+                    <div class="text-xs text-muted font-mono">1.8 MB · Tenant #104</div>
+                  </td>
+                  <td><span class="badge badge-pill badge-cipher">AES-256-GCM</span></td>
+                  <td class="font-mono text-xs text-muted">9f86d081884c7d65...</td>
+                  <td><span class="badge badge-success">Verified</span></td>
+                  <td style="text-align: right;">
+                    <button type="button" class="btn btn-secondary btn-sm">Inspect</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong class="text-primary">system-architecture.diagram</strong>
+                    <div class="text-xs text-muted font-mono">342 KB · Tenant #104</div>
+                  </td>
+                  <td><span class="badge badge-pill badge-cipher">AES-256-GCM</span></td>
+                  <td class="font-mono text-xs text-muted">e3b0c44298fc1c14...</td>
+                  <td><span class="badge badge-success">Verified</span></td>
+                  <td style="text-align: right;">
+                    <button type="button" class="btn btn-secondary btn-sm">Inspect</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong class="text-primary">unauthorized_probe.bin</strong>
+                    <div class="text-xs text-muted font-mono">0 KB · Unknown Origin</div>
+                  </td>
+                  <td><span class="badge badge-mono">Isolated</span></td>
+                  <td class="font-mono text-xs text-muted">—</td>
+                  <td><span class="badge badge-danger">Blocked</span></td>
+                  <td style="text-align: right;">
+                    <button type="button" class="btn btn-danger btn-sm">Revoke</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Loading Skeletons & Empty States -->
+      <section class="card" id="skeletons">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">ASYNC STATES</div>
+            <h3>Loading Skeletons & Shimmers</h3>
+          </div>
+          <span class="badge badge-mono">.skeleton</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Skeleton Card -->
+          <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; display: flex; gap: 16px; align-items: center;">
+            <div class="skeleton skeleton-circle"></div>
+            <div style="flex: 1;">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text" style="width: 85%;"></div>
+              <div class="skeleton skeleton-text" style="width: 45%;"></div>
+            </div>
+            <div class="skeleton skeleton-btn"></div>
+          </div>
+
+          <!-- Empty State Demo -->
+          <div class="empty-state" style="border: 1px dashed var(--border-default); border-radius: var(--radius-md);">
+            <div class="empty-state-glyph">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+            </div>
+            <h4 class="empty-state-title">Empty State Pattern</h4>
+            <p class="empty-state-desc">Minimalist layout displayed when no data or matching records exist for this filter.</p>
+            <button type="button" class="btn btn-secondary btn-sm" style="margin-top: 6px;">Reset Filter</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer class="app-footer">
+      <div class="footer-credits">
+        <span>V-GRT Cloud Data Security Enhancement System</span>
+        <span class="text-muted">·</span>
+        <span class="text-muted">Design System Showcase</span>
+      </div>
+      <div class="footer-tags">
+        <span><strong>V</strong>irtualization</span>
+        <span>·</span>
+        <span><strong>G</strong>overnance</span>
+        <span>·</span>
+        <span><strong>R</strong>eliability & <strong>T</strong>rust</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Interactive Demo Modal -->
+  <div class="modal-overlay" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="demoModalTitle">Modal Dialog Component</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon-only" data-modal-close aria-label="Close dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div class="eyebrow">ACCESSIBLE COMPONENT</div>
+        <h4>Subtle 3D Elevation & Backdrop Blur</h4>
+        <p class="text-sm">This modal demonstrates keyboard trapping, <kbd class="font-mono">ESC</kbd> key dismissal, click-outside backdrop closing, and smooth spring physics transitions.</p>
+        <div style="padding: 12px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-size: 0.8rem;">
+          <strong class="text-primary">Theme Reactive:</strong> This dialog automatically adapts to both Dark and Light monochrome tokens.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-modal-close>Dismiss</button>
+        <button type="button" class="btn btn-primary btn-sm" data-modal-close>Confirm Action</button>
+      </div>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>

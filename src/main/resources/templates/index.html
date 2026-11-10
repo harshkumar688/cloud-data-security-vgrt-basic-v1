@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud Data Security Enhancement System · V-GRT Methodology</title>
+  
+  <script>
+    (function() {
+      var saved = localStorage.getItem('vgrt_theme_preference');
+      var theme = saved || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link rel="stylesheet" th:href="@{/app.css}">
+  <script defer th:src="@{/app.js}"></script>
+</head>
+<body>
+
+  <!-- Landing Navigation Topbar -->
+  <header class="app-topbar" style="position: sticky; top: 0; z-index: 50;">
+    <div class="topbar-left">
+      <a th:href="@{/}" class="brand-link">
+        <div class="brand-glyph">V</div>
+        <div class="brand-title">
+          <span>V-GRT</span>
+          <span>SECURE CLOUD</span>
+        </div>
+      </a>
+      
+      <nav class="topbar-breadcrumbs" style="margin-left: 20px; display: none; @media(min-width: 860px){ display: flex; }" aria-label="Page navigation">
+        <a th:href="@{/}" class="text-xs text-secondary" style="text-decoration:none; margin-right: 12px;">Home</a>
+        <a th:href="@{/about}" class="text-xs text-secondary" style="text-decoration:none; margin-right: 12px;">About</a>
+        <a th:href="@{/methodology}" class="text-xs text-secondary" style="text-decoration:none; margin-right: 12px;">Methodology</a>
+        <a th:href="@{/architecture}" class="text-xs text-secondary" style="text-decoration:none; margin-right: 12px;">Architecture</a>
+        <a th:href="@{/sample-output.html}" class="text-xs text-secondary" style="text-decoration:none;">Design System</a>
+      </nav>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Theme Switcher Button -->
+      <button type="button" class="theme-toggle-btn" aria-label="Toggle monochrome color theme">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+
+      <!-- Authenticated View: Direct Link to Vault -->
+      <div th:if="${isAuthenticated}" style="display: flex; align-items: center; gap: 10px;">
+        <a th:href="@{/vault}" class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Open Vault
+        </a>
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+          <button type="submit" class="btn btn-secondary btn-sm">Sign out</button>
+        </form>
+      </div>
+
+      <!-- Guest / Visitor View: Sign In & Register -->
+      <div th:if="${!isAuthenticated}" style="display: flex; align-items: center; gap: 8px;">
+        <a th:href="@{/login}" class="btn btn-ghost btn-sm">Sign In</a>
+        <a th:href="@{/register}" class="btn btn-primary btn-sm">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Main Container -->
+  <main style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+
+    <!-- 1. HERO SECTION -->
+    <section class="landing-hero" id="overview">
+      <div class="eyebrow" style="margin-bottom: 12px;">
+        <span>ACADEMIC MAJOR PROJECT · ADVANCED CLOUD SECURITY</span>
+      </div>
+
+      <h1 class="landing-hero-headline">
+        Security, Engineered with Precision.
+      </h1>
+
+      <p class="landing-hero-sub">
+        A cloud data security enhancement platform implementing the <strong>V-GRT Methodology</strong>. 
+        Unifying Virtualization, Governance, and Trustworthy Security through authenticated hybrid envelope cryptography and tenant isolation.
+      </p>
+
+      <!-- Authenticated Session Banner (if logged in) -->
+      <div th:if="${isAuthenticated}" class="notice success" style="margin-bottom: 24px; max-width: 580px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+        <span>Welcome back, <strong th:text="${username}">user</strong>. Your encrypted vault is active with <span th:text="${#lists.size(files)}">0</span> stored files.</span>
+      </div>
+
+      <!-- Primary Action Buttons -->
+      <div class="landing-hero-actions">
+        <a th:href="${isAuthenticated} ? @{/vault} : @{/login}" class="btn btn-primary btn-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Explore Platform
+        </a>
+        <a href="#architecture" class="btn btn-secondary btn-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          View Architecture
+        </a>
+      </div>
+
+      <!-- 3D Interactive Telemetry Preview Card -->
+      <div class="hero-telemetry-preview">
+        <div class="telemetry-preview-bar">
+          <div class="window-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="font-mono text-xs text-muted">VGRT_CRYPTO_ENGINE // STATUS: ACTIVE_VERIFIED</div>
+          <span class="badge badge-pill badge-mono text-xs">AES-256-GCM</span>
+        </div>
+        <div class="telemetry-preview-body">
+          <div class="telemetry-spec-box">
+            <span class="text-xs text-muted">Symmetric Cipher</span>
+            <strong class="font-mono text-sm text-primary">AES-256-GCM</strong>
+            <span class="text-xs text-muted">12-byte Nonce + 128-bit Tag</span>
+          </div>
+          <div class="telemetry-spec-box">
+            <span class="text-xs text-muted">Asymmetric Key Wrapping</span>
+            <strong class="font-mono text-sm text-primary">RSA-OAEP-2048</strong>
+            <span class="text-xs text-muted">SHA-256 / MGF1-SHA256</span>
+          </div>
+          <div class="telemetry-spec-box">
+            <span class="text-xs text-muted">Integrity Verification</span>
+            <strong class="font-mono text-sm text-primary">SHA-256 Digest</strong>
+            <span class="text-xs text-muted">Validated on byte download</span>
+          </div>
+          <div class="telemetry-spec-box">
+            <span class="text-xs text-muted">Virtual Isolation</span>
+            <strong class="font-mono text-sm text-primary">Tenant-Scoped L3</strong>
+            <span class="text-xs text-muted">Zero cross-account leak</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. THE PROBLEM & OUR SOLUTION -->
+    <section class="landing-section" id="problem-solution">
+      <div class="section-title-wrap">
+        <div class="eyebrow">SECURITY ANALYSIS & MOTIVATION</div>
+        <h2 class="section-headline">The Cloud Dilemma & The V-GRT Solution</h2>
+        <p class="text-secondary">Understanding why traditional multi-tenant storage architectures fail and how V-GRT establishes provable cryptographic protection.</p>
+      </div>
+
+      <div class="comparison-grid">
+        <!-- Problem Card -->
+        <article class="comparison-card problem">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="eyebrow" style="color: var(--text-muted);">THE CONVENTIONAL PROBLEM</div>
+            <span class="badge badge-mono text-xs">Vulnerability Vectors</span>
+          </div>
+          <h3>Traditional Multi-Tenant Cloud Exposure</h3>
+          <p class="text-sm">In standard cloud systems, tenant isolation relies purely on loose database flags. Storage servers hold unencrypted files or shared encryption keys accessible to platform operators and malicious insiders.</p>
+          
+          <ul class="comparison-list">
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span><strong>Plaintext File Storage:</strong> Files stored unencrypted on disk are vulnerable to direct host compromise.</span>
+            </li>
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span><strong>Shared Encryption Keys:</strong> Global server keys expose all users if a single administrative leak occurs.</span>
+            </li>
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span><strong>Untracked Data Access:</strong> Inadequate or mutable audit logs prevent forensic security analysis.</span>
+            </li>
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span><strong>Silent Bit Rot / Tampering:</strong> Downloaded files lack mathematical integrity validation.</span>
+            </li>
+          </ul>
+        </article>
+
+        <!-- Solution Card -->
+        <article class="comparison-card solution">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="eyebrow" style="color: var(--text-primary);">THE ARCHITECTURAL SOLUTION</div>
+            <span class="badge badge-cipher text-xs">V-GRT Enforced</span>
+          </div>
+          <h3>The V-GRT Engineered Paradigm</h3>
+          <p class="text-sm">V-GRT enforces a Zero-Plaintext architectural boundary. Every stored file is sealed with an ephemeral symmetric key wrapped asymmetrically, combined with database-level isolation and tamper-evident audit trails.</p>
+
+          <ul class="comparison-list">
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Zero-Plaintext Persistence:</strong> Only AES-256-GCM ciphertext bytes are ever written to the physical storage disk.</span>
+            </li>
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Hybrid Envelope Encryption:</strong> Fresh 256-bit AES key per file, wrapped with RSA-OAEP-2048 public key.</span>
+            </li>
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Cryptographic Digest Integrity:</strong> SHA-256 hash verified during download before bytes reach the client.</span>
+            </li>
+            <li class="comparison-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Immutable Security Ledger:</strong> Detailed chronological audit trail recording all logins, transfers, and access denials.</span>
+            </li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. V-GRT METHODOLOGY SECTION -->
+    <section class="landing-section" id="methodology">
+      <div class="section-title-wrap">
+        <div class="eyebrow">CORE RESEARCH FRAMEWORK</div>
+        <h2 class="section-headline">The V-GRT Methodology</h2>
+        <p class="text-secondary">A multi-layered architectural approach designed to eliminate single points of failure across multi-tenant cloud storage ecosystems.</p>
+      </div>
+
+      <div class="methodology-grid">
+        <!-- V: Virtualization -->
+        <article class="methodology-pillar">
+          <div class="pillar-badge-letter">V</div>
+          <div>
+            <div class="eyebrow">PILLAR ONE</div>
+            <h3>Virtualization</h3>
+          </div>
+          <p class="text-sm">Enforces strict logical tenant partitioning. Accounts only observe and query their owned assets. Foreign file access requests return HTTP 404 and log an intrusion denial event.</p>
+          <span class="badge badge-mono text-xs">Tenant Isolation Active</span>
+        </article>
+
+        <!-- G: Governance -->
+        <article class="methodology-pillar">
+          <div class="pillar-badge-letter">G</div>
+          <div>
+            <div class="eyebrow">PILLAR TWO</div>
+            <h3>Governance</h3>
+          </div>
+          <p class="text-sm">Administrative accountability and access control policies. Role-based enforcement (`ROLE_ADMIN` vs `ROLE_USER`) with an unalterable chronological audit ledger tracking all operations.</p>
+          <span class="badge badge-mono text-xs">Role-Based Access</span>
+        </article>
+
+        <!-- R: Risk Assessment -->
+        <article class="methodology-pillar">
+          <div class="pillar-badge-letter">R</div>
+          <div>
+            <div class="eyebrow">PILLAR THREE</div>
+            <h3>Risk Assessment</h3>
+          </div>
+          <p class="text-sm">Systematic threat evaluation framework designed to analyze abnormal access frequencies, foreign download probes, and credential brute-force patterns across tenant boundaries.</p>
+          <span class="badge badge-mono text-xs" style="color: var(--text-muted);">Research Roadmap</span>
+        </article>
+
+        <!-- T: Trustworthy Security -->
+        <article class="methodology-pillar">
+          <div class="pillar-badge-letter">T</div>
+          <div>
+            <div class="eyebrow">PILLAR FOUR</div>
+            <h3>Trustworthy Security</h3>
+          </div>
+          <p class="text-sm">Mathematical proof of privacy and integrity. Ephemeral AES-256-GCM symmetric ciphers, RSA-OAEP asymmetric key encapsulation, SHA-256 digest validation, and BCrypt key stretching.</p>
+          <span class="badge badge-cipher text-xs">Hardware Crypto</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. HOW IT WORKS (COMPLETE FILE SECURITY WORKFLOW) -->
+    <section class="landing-section" id="workflow">
+      <div class="section-title-wrap">
+        <div class="eyebrow">DATA FLOW SPECIFICATION</div>
+        <h2 class="section-headline">How It Works: The Ingestion & Retrieval Pipeline</h2>
+        <p class="text-secondary">Step-by-step cryptographic sequence executed on every file upload and download.</p>
+      </div>
+
+      <div class="workflow-step-list">
+        <article class="workflow-step-card">
+          <div class="workflow-step-number">01</div>
+          <div>
+            <h4>Client Upload & Validation</h4>
+            <p class="text-sm">Client submits file via CSRF-protected HTTPS multipart request. File size is checked against the 10 MB boundary, and path traversal characters are sanitized.</p>
+          </div>
+          <span class="badge badge-mono text-xs">Input Filter</span>
+        </article>
+
+        <article class="workflow-step-card">
+          <div class="workflow-step-number">02</div>
+          <div>
+            <h4>AES-256-GCM Symmetric Sealing</h4>
+            <p class="text-sm">A cryptographically strong 256-bit key and 12-byte initialization vector (nonce) are generated in RAM. The file payload is encrypted into ciphertext with a 128-bit authentication tag.</p>
+          </div>
+          <span class="badge badge-cipher text-xs">AES-256-GCM</span>
+        </article>
+
+        <article class="workflow-step-card">
+          <div class="workflow-step-number">03</div>
+          <div>
+            <h4>Asymmetric RSA-OAEP Key Wrapping</h4>
+            <p class="text-sm">The ephemeral 256-bit AES key is encapsulated using the platform's 2048-bit RSA public key with Optimal Asymmetric Encryption Padding (OAEP with SHA-256 and MGF1).</p>
+          </div>
+          <span class="badge badge-mono text-xs">RSA-OAEP-2048</span>
+        </article>
+
+        <article class="workflow-step-card">
+          <div class="workflow-step-number">04</div>
+          <div>
+            <h4>Zero-Plaintext Storage & Audit Recording</h4>
+            <p class="text-sm">Only encrypted ciphertext bytes are written to disk under a randomized UUID. Plaintext bytes and raw AES keys are purged from memory. An audit event is committed.</p>
+          </div>
+          <span class="badge badge-mono text-xs">Zero Plaintext</span>
+        </article>
+
+        <article class="workflow-step-card">
+          <div class="workflow-step-number">05</div>
+          <div>
+            <h4>Verified Retrieval & Integrity Validation</h4>
+            <p class="text-sm">On download request, ownership is checked. The private RSA key unwraps the AES key, the ciphertext is decrypted, and the calculated SHA-256 digest is verified before streaming.</p>
+          </div>
+          <span class="badge badge-success text-xs">SHA-256 Verified</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5. CORE FEATURES SECTION -->
+    <section class="landing-section" id="features">
+      <div class="section-title-wrap">
+        <div class="eyebrow">PLATFORM CAPABILITIES</div>
+        <h2 class="section-headline">Engineered Security Features</h2>
+        <p class="text-secondary">Core capabilities implemented in this enterprise prototype alongside forward research specifications.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <article class="card" style="padding: 22px;">
+          <div class="eyebrow" style="color: var(--text-primary);">IMPLEMENTED · V1</div>
+          <h4 style="margin: 6px 0 8px;">Hybrid Envelope Encryption</h4>
+          <p class="text-sm text-secondary">Every uploaded object receives a unique 256-bit symmetric key, preventing multi-object compromise from a single key exposure.</p>
+        </article>
+
+        <article class="card" style="padding: 22px;">
+          <div class="eyebrow" style="color: var(--text-primary);">IMPLEMENTED · V1</div>
+          <h4 style="margin: 6px 0 8px;">Strict Account Scoping</h4>
+          <p class="text-sm text-secondary">Database queries enforce owner authentication. Foreign file IDs return 404 and log an immediate security denial violation.</p>
+        </article>
+
+        <article class="card" style="padding: 22px;">
+          <div class="eyebrow" style="color: var(--text-primary);">IMPLEMENTED · V1</div>
+          <h4 style="margin: 6px 0 8px;">BCrypt Credential Hardening</h4>
+          <p class="text-sm text-secondary">Passwords are hashed using BCrypt (work factor 12) with a 12–72 character complexity policy to prevent dictionary and rainbow-table attacks.</p>
+        </article>
+
+        <article class="card" style="padding: 22px;">
+          <div class="eyebrow" style="color: var(--text-primary);">IMPLEMENTED · V1</div>
+          <h4 style="margin: 6px 0 8px;">Cryptographic Audit Trail</h4>
+          <p class="text-sm text-secondary">Automated recording of all sign-ins, failures, uploads, downloads, and denied probes with zero secret leaks.</p>
+        </article>
+
+        <article class="card" style="padding: 22px;">
+          <div class="eyebrow" style="color: var(--text-muted);">RESEARCH ROADMAP</div>
+          <h4 style="margin: 6px 0 8px;">Dynamic Risk Scoring</h4>
+          <p class="text-sm text-muted">Configurable risk evaluation engine analyzing tenant velocity, abnormal download spikes, and access denial thresholds.</p>
+        </article>
+
+        <article class="card" style="padding: 22px;">
+          <div class="eyebrow" style="color: var(--text-muted);">RESEARCH ROADMAP</div>
+          <h4 style="margin: 6px 0 8px;">Cryptographic Shredding</h4>
+          <p class="text-sm text-muted">Policy-based automated data expiration through targeted destruction of RSA-wrapped keys, rendering ciphertext irrecoverable.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6. TECHNOLOGY STACK -->
+    <section class="landing-section" id="tech-stack">
+      <div class="section-title-wrap">
+        <div class="eyebrow">SYSTEM ARCHITECTURE</div>
+        <h2 class="section-headline">Enterprise Technology Stack</h2>
+        <p class="text-secondary">Engineered with high-reliability Java standards and industry-approved cryptographic primitives.</p>
+      </div>
+
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Technology</th>
+              <th>Version / Specification</th>
+              <th>Architectural Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong class="text-primary">Core Runtime</strong></td>
+              <td>Java Platform Standard Edition</td>
+              <td class="font-mono text-xs">JDK 21 LTS</td>
+              <td class="text-xs text-secondary">High-performance JVM with native cryptographic acceleration</td>
+            </tr>
+            <tr>
+              <td><strong class="text-primary">Application Framework</strong></td>
+              <td>Spring Boot</td>
+              <td class="font-mono text-xs">v4.1.2</td>
+              <td class="text-xs text-secondary">Modular MVC architecture, dependency injection, and JPA persistence</td>
+            </tr>
+            <tr>
+              <td><strong class="text-primary">Security & Auth</strong></td>
+              <td>Spring Security</td>
+              <td class="font-mono text-xs">v6.x (BCrypt Cost 12)</td>
+              <td class="text-xs text-secondary">Role-based authorization, session management, and CSRF token defenses</td>
+            </tr>
+            <tr>
+              <td><strong class="text-primary">Symmetric Cipher</strong></td>
+              <td>AES (Advanced Encryption Standard)</td>
+              <td class="font-mono text-xs">256-bit GCM (NoPadding)</td>
+              <td class="text-xs text-secondary">Galois/Counter Mode providing authenticated encryption with associated data</td>
+            </tr>
+            <tr>
+              <td><strong class="text-primary">Asymmetric Wrapper</strong></td>
+              <td>RSA Key Encapsulation</td>
+              <td class="font-mono text-xs">2048-bit OAEP (SHA-256)</td>
+              <td class="text-xs text-secondary">Secure envelope wrapping of ephemeral symmetric file keys</td>
+            </tr>
+            <tr>
+              <td><strong class="text-primary">Integrity Verifier</strong></td>
+              <td>Secure Hash Algorithm</td>
+              <td class="font-mono text-xs">SHA-256</td>
+              <td class="text-xs text-secondary">Cryptographic checksum verification executed before client byte streaming</td>
+            </tr>
+            <tr>
+              <td><strong class="text-primary">Data Persistence</strong></td>
+              <td>Spring Data JPA & Hibernate</td>
+              <td class="font-mono text-xs">H2 (Dev) / MySQL 8 (Prod)</td>
+              <td class="text-xs text-secondary">Relational metadata persistence with strict owner-scoped repository queries</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 7. SECURITY ARCHITECTURE PREVIEW -->
+    <section class="landing-section" id="architecture">
+      <div class="section-title-wrap">
+        <div class="eyebrow">TOPOLOGY SPECIFICATION</div>
+        <h2 class="section-headline">Security Architecture Preview</h2>
+        <p class="text-secondary">Conceptual separation of concerns between client traffic, virtualization boundary, cryptographic core, and storage.</p>
+      </div>
+
+      <div class="arch-diagram-grid">
+        <div class="arch-node">
+          <div class="eyebrow">BOUNDARY 1</div>
+          <strong class="text-primary">Client Ingestion Layer</strong>
+          <p class="text-xs text-muted">HTTPS / TLS 1.3 encrypted browser communication. CSRF validation tokens and file size boundary enforcement.</p>
+        </div>
+
+        <div class="arch-node">
+          <div class="eyebrow">BOUNDARY 2</div>
+          <strong class="text-primary">Virtual Tenant Scoping</strong>
+          <p class="text-xs text-muted">Spring Security context enforces account ownership. Repositories query exclusively by authenticated username.</p>
+        </div>
+
+        <div class="arch-node">
+          <div class="eyebrow">BOUNDARY 3</div>
+          <strong class="text-primary">Crypto Orchestrator</strong>
+          <p class="text-xs text-muted">`CryptoService` generates fresh 256-bit keys, encrypts payloads, and wraps keys using public RSA-OAEP certificates.</p>
+        </div>
+
+        <div class="arch-node">
+          <div class="eyebrow">BOUNDARY 4</div>
+          <strong class="text-primary">Ciphertext Vault & DB</strong>
+          <p class="text-xs text-muted">Protected filesystem contains only `.bin` ciphertext files. JPA database stores only wrapped keys and metadata.</p>
+        </div>
+
+        <div class="arch-node">
+          <div class="eyebrow">BOUNDARY 5</div>
+          <strong class="text-primary">Immutable Audit Ledger</strong>
+          <p class="text-xs text-muted">Dedicated `AuditEventRepository` writes immutable records of successful and denied operations for admin governance.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. PROJECT BENEFITS AND USE CASES -->
+    <section class="landing-section" id="use-cases">
+      <div class="section-title-wrap">
+        <div class="eyebrow">APPLICATION DOMAINS</div>
+        <h2 class="section-headline">Benefits & Industry Use Cases</h2>
+        <p class="text-secondary">Proven value across privacy-critical enterprise and academic domains.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <article class="stat-card">
+          <span class="text-xs text-muted font-mono">USE CASE 01</span>
+          <strong class="text-base text-primary" style="margin-top: 4px;">Multi-Tenant Cloud Storage</strong>
+          <p class="text-xs text-secondary" style="margin-top: 6px;">Eliminates single point of failure in shared cloud infrastructure through per-tenant logical isolation and per-file encryption.</p>
+        </article>
+
+        <article class="stat-card">
+          <span class="text-xs text-muted font-mono">USE CASE 02</span>
+          <strong class="text-base text-primary" style="margin-top: 4px;">Healthcare Records (HIPAA)</strong>
+          <p class="text-xs text-secondary" style="margin-top: 6px;">Patient health information stored under strict cryptographic envelopes ensuring data remains unreadable even in raw disk access.</p>
+        </article>
+
+        <article class="stat-card">
+          <span class="text-xs text-muted font-mono">USE CASE 03</span>
+          <strong class="text-base text-primary" style="margin-top: 4px;">Financial & Legal Auditing</strong>
+          <p class="text-xs text-secondary" style="margin-top: 6px;">Immutable audit trails and verifiable SHA-256 digests ensure evidence integrity for forensic accounting and legal compliance.</p>
+        </article>
+
+        <article class="stat-card">
+          <span class="text-xs text-muted font-mono">USE CASE 04</span>
+          <strong class="text-base text-primary" style="margin-top: 4px;">Academic Research Benchmark</strong>
+          <p class="text-xs text-secondary" style="margin-top: 6px;">A modular, clean-code prototype built for final-year engineering evaluation, demonstrating practical cloud security design.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 9. FINAL CALL-TO-ACTION (CTA) -->
+    <section class="landing-section" style="border-bottom: 1px solid var(--border-subtle); margin-bottom: 40px;">
+      <div class="landing-cta-banner">
+        <div class="eyebrow">ENTERPRISE CLOUD DATA SECURITY</div>
+        <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; letter-spacing: -0.03em;">
+          Ready to Evaluate V-GRT Cloud Security?
+        </h2>
+        <p class="text-secondary" style="max-width: 580px;">
+          Experience tenant-isolated file storage with real-time hybrid envelope encryption, SHA-256 integrity verification, and audit logging.
+        </p>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
+          <a th:href="${isAuthenticated} ? @{/vault} : @{/register}" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            <span th:text="${isAuthenticated} ? 'Enter Your Vault' : 'Create Free Account'">Get Started</span>
+          </a>
+          <a th:href="@{/sample-output.html}" class="btn btn-secondary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Component Showcase
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 10 & 11. COMPLETE PROFESSIONAL FOOTER -->
+  <footer class="app-footer" style="padding: 36px 32px 28px;">
+    <div style="max-width: 1200px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 24px;">
+        <div>
+          <div class="brand-link" style="margin-bottom: 8px;">
+            <div class="brand-glyph" style="width: 28px; height: 28px; font-size: 0.9rem;">V</div>
+            <div class="brand-title">
+              <span>V-GRT</span>
+              <span>SECURE CLOUD</span>
+            </div>
+          </div>
+          <p class="text-xs text-muted" style="max-width: 380px;">
+            Cloud Data Security Enhancement System using V-GRT Methodology. Academic major project prototype implementing Virtualization, Governance, and Trustworthy Security.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+          <div>
+            <div class="eyebrow" style="color: var(--text-primary); margin-bottom: 8px;">PLATFORM</div>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem;">
+              <a th:href="@{/vault}" class="text-secondary" style="text-decoration:none;">Personal Vault</a>
+              <a th:href="@{/admin/audit}" class="text-secondary" style="text-decoration:none;">Audit Ledger</a>
+              <a th:href="@{/sample-output.html}" class="text-secondary" style="text-decoration:none;">Design System</a>
+            </div>
+          </div>
+          <div>
+            <div class="eyebrow" style="color: var(--text-primary); margin-bottom: 8px;">METHODOLOGY</div>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem;">
+              <a href="#methodology" class="text-secondary" style="text-decoration:none;">Virtualization</a>
+              <a href="#methodology" class="text-secondary" style="text-decoration:none;">Governance</a>
+              <a href="#methodology" class="text-secondary" style="text-decoration:none;">Risk Assessment</a>
+              <a href="#methodology" class="text-secondary" style="text-decoration:none;">Trustworthy Security</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.76rem; color: var(--text-muted);">
+        <div>
+          <span>© 2026 V-GRT Cloud Data Security Enhancement System. Major Project Final Year Submission.</span>
+        </div>
+        <div class="font-mono text-xs">
+          <span>AES-256-GCM</span> · <span>RSA-OAEP-2048</span> · <span>SHA-256</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

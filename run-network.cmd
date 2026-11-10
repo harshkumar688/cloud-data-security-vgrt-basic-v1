@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-if not defined PORT set "PORT=8080"
+if not defined PORT set "PORT=8081"
 set "SERVER_ADDRESS=0.0.0.0"
 
 echo Starting V-GRT for devices on this local network.

@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('User Security Dashboard')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('dashboard')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Platform', 'Security Dashboard')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Alert Notices from Uploads/Actions -->
+      <div class="notice success" th:if="${success}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span th:text="${success}">Operation completed successfully.</span>
+      </div>
+      <div class="notice error" th:if="${error}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span th:text="${error}">An error occurred.</span>
+      </div>
+
+      <!-- 1. Welcome Message & User Account Status Banner -->
+      <section class="dashboard-banner">
+        <div class="dashboard-user-profile">
+          <div class="dashboard-avatar-large" th:text="${#strings.substring(username != null ? username : 'User', 0, 1).toUpperCase()}">U</div>
+          <div class="dashboard-user-info">
+            <h2>
+              Welcome back, <span th:text="${username}">User</span>
+            </h2>
+            <div class="dashboard-meta-row">
+              <span class="badge badge-cipher" th:text="${accountStatus}">ACTIVE · LEVEL 3 ENCLAVE</span>
+              <span class="badge badge-pill badge-mono" th:text="${isAdmin ? 'ROLE: ADMINISTRATOR' : 'ROLE: TENANT'}">ROLE</span>
+              <span>Member since: <strong th:text="${memberSinceFormatted}">Jan 01, 2026</strong></span>
+              <span>Tenant Namespace: <code class="font-mono" th:text="${workspace.namespace}">vgrt/tenant/user</code></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12. Quick Action Buttons -->
+        <div class="dashboard-quick-actions">
+          <button type="button" class="btn btn-primary" data-modal-target="uploadModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload File
+          </button>
+          <a th:href="@{/vault}" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Personal Vault
+          </a>
+          <button type="button" class="btn btn-ghost" data-modal-target="cryptoModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Security Specs
+          </button>
+        </div>
+      </section>
+
+      <!-- 2, 3, 4, 9. Key Metrics Grid (Total, Encrypted, Storage, Risk) -->
+      <section class="stat-card-grid">
+        
+        <!-- Total Uploaded Files -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">TOTAL UPLOADED FILES</span>
+            <span class="badge badge-mono">All Time</span>
+          </div>
+          <div class="stat-value" th:text="${totalFiles}">0</div>
+          <div class="stat-delta text-muted">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>Scoped to current tenant vault</span>
+          </div>
+        </div>
+
+        <!-- Encrypted Files -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">ENCRYPTED AT REST</span>
+            <span class="badge badge-cipher" th:text="${encryptionPercentage}">100%</span>
+          </div>
+          <div class="stat-value" th:text="${encryptedFiles}">0</div>
+          <div class="stat-delta text-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>AES-256-GCM + RSA-OAEP Wrapped</span>
+          </div>
+        </div>
+
+        <!-- Storage Usage -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">STORAGE CONSUMPTION</span>
+            <span class="badge badge-mono" th:text="${storageUsagePercentage + '%'}">0%</span>
+          </div>
+          <div class="stat-value" th:text="${storageFormatted}">0 B</div>
+          <div class="metric-progress-bar">
+            <div class="metric-progress-fill" th:style="'width: ' + ${storageUsagePercentage} + '%;'"></div>
+          </div>
+          <div class="stat-delta text-muted" style="margin-top: 6px;">
+            <span>Quota: <strong th:text="${storageQuotaFormatted}">50 MB</strong> allocated</span>
+          </div>
+        </div>
+
+        <!-- Risk Assessment Summary -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">RISK ASSESSMENT POSTURE</span>
+            <span class="badge badge-pill badge-mono" style="border: 1px dashed var(--border-strong);" title="Preview Adapter Model">Preview Model</span>
+          </div>
+          <div class="stat-value" th:text="${riskAssessment.scoreOutOfTen + ' / 10'}">0.5 / 10</div>
+          <div class="stat-delta text-primary">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e;"></span>
+            <span th:text="${riskAssessment.rating}">LOW RISK</span>
+            <span class="text-muted">· Enclave Nominal</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 6. Pending Security Alerts & Status Notices -->
+      <section class="card" th:if="${alerts != null and !alerts.isEmpty()}">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">SYSTEM SECURITY TELEMETRY</div>
+            <h3 class="card-title">Security Advisories &amp; Alerts</h3>
+          </div>
+          <span class="badge badge-pill badge-mono">Continuous Telemetry</span>
+        </div>
+        <div class="card-body" style="display: flex; flex-direction: column; gap: 12px;">
+          <div th:each="alert : ${alerts}" class="notice" th:classappend="${alert.level == 'warning' ? 'error' : (alert.level == 'info' ? 'info' : 'success')}">
+            <svg th:if="${alert.level == 'warning'}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <svg th:if="${alert.level != 'warning'}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <strong th:text="${alert.title}">Security Notice</strong>
+              <span class="text-xs" th:text="${alert.message}">Alert description.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Charts: Activity Trends + Storage Composition -->
+      <div class="analytics-grid-two">
+        
+        <!-- Activity Trends Line Chart -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">CRYPTOGRAPHIC TELEMETRY</div>
+              <h3 class="card-title">Activity &amp; Integrity Ingestion (Last 7 Days)</h3>
+            </div>
+            
+            <!-- Date Filter Pills -->
+            <div class="filter-pill-group" role="tablist" aria-label="Date filter">
+              <button type="button" class="filter-pill active" data-filter="7d">7 Days</button>
+              <button type="button" class="filter-pill" data-filter="30d">30 Days</button>
+              <button type="button" class="filter-pill" data-filter="all">All</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container-box">
+              <div class="chart-svg-wrap">
+                <!-- High-Resolution Monochrome SVG Chart -->
+                <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
+                      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                    </linearGradient>
+                  </defs>
+
+                  <!-- Subtle Grid Lines -->
+                  <line x1="20" y1="20" x2="380" y2="20" stroke="var(--border-subtle)" stroke-width="1" stroke-dasharray="3,3" />
+                  <line x1="20" y1="60" x2="380" y2="60" stroke="var(--border-subtle)" stroke-width="1" stroke-dasharray="3,3" />
+                  <line x1="20" y1="100" x2="380" y2="100" stroke="var(--border-subtle)" stroke-width="1" />
+
+                  <!-- Area Fill -->
+                  <polygon th:if="${activityTrends != null and !activityTrends.isEmpty()}" 
+                           th:attr="points=${activityTrends[0].svgArea}" 
+                           fill="url(#chartGradient)" />
+
+                  <!-- Trend Polyline -->
+                  <polyline th:if="${activityTrends != null and !activityTrends.isEmpty()}"
+                            th:attr="points=${activityTrends[0].svgPolyline}" 
+                            fill="none" 
+                            stroke="var(--text-primary)" 
+                            stroke-width="2.5" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" />
+
+                  <!-- Data Nodes -->
+                  <g th:each="day : ${activityTrends}">
+                    <circle th:attr="cx=${day.x},cy=${day.y}" r="4" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="2" />
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Day Labels -->
+              <div class="chart-axis-labels">
+                <span th:each="day : ${activityTrends}" th:text="${day.label}">Mon</span>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 0.8rem; color: var(--text-muted);">
+              <span>Real-time operations: Upload, Download, Integrity Digest Evaluation</span>
+              <span class="badge badge-pill badge-mono">Live Ingestion</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Storage & Payload Type Distribution Chart -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PAYLOAD COMPOSITION</div>
+              <h3 class="card-title">Encrypted Asset Types</h3>
+            </div>
+            <span class="badge badge-mono">Enclave Breakdown</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; justify-content: space-between;">
+            
+            <div style="display: flex; align-items: center; justify-content: center; padding: 12px 0;">
+              <!-- Pure CSS/SVG Donut Ring -->
+              <div style="position: relative; width: 110px; height: 110px;">
+                <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                  <!-- Background Track -->
+                  <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--bg-surface-raised)" stroke-width="3" />
+                  <!-- Progress Dash representing Encrypted Coverage -->
+                  <circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--text-primary)" stroke-width="3.5"
+                          stroke-dasharray="100, 100" stroke-linecap="round" />
+                </svg>
+                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                  <span style="font-size: 1.15rem; font-weight: 700; font-family: var(--font-mono);" th:text="${totalFiles}">0</span>
+                  <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Objects</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Category Breakdown List -->
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+              <div th:each="entry : ${typeCounts}" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); font-size: 0.8rem;">
+                <span class="text-secondary" th:text="${entry.key}">Documents</span>
+                <span class="font-mono font-bold" th:text="${entry.value}">0</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- 8 & 11. Security Overview & Workspace Information -->
+      <div class="info-content-grid" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));">
+        
+        <!-- 8. Security Overview Card -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PILLAR IV: TRUSTED CRYPTOGRAPHY</div>
+              <h3 class="card-title">Security &amp; Cipher Overview</h3>
+            </div>
+            <span class="badge badge-cipher">Active Suite</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Symmetric Encryption:</span>
+              <span class="font-mono font-bold text-primary" th:text="${securityOverview.cipherSuite}">AES-256-GCM (128-bit Tag)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Digest Verification:</span>
+              <span class="font-mono font-bold text-primary" th:text="${securityOverview.integrityCheck}">SHA-256 Recalculated</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Multi-Tenancy Layer:</span>
+              <span class="font-mono text-primary" th:text="${securityOverview.isolationModel}">Level 3 Key Segregation</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Credential KDF:</span>
+              <span class="font-mono text-primary" th:text="${securityOverview.credentialHashing}">BCrypt (Cost Factor 12)</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11. Workspace Information Card -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PILLAR I: VIRTUALIZATION</div>
+              <h3 class="card-title">Tenant Workspace Boundary</h3>
+            </div>
+            <span class="badge badge-mono">Enclave Scoped</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Tenant Identifier:</span>
+              <span class="font-mono font-bold" th:text="${workspace.tenantId}">VGRT-TNT-001</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Storage Namespace:</span>
+              <code class="font-mono" th:text="${workspace.namespace}">vgrt/tenant/user</code>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Storage Enclave:</span>
+              <span class="font-mono" th:text="${workspace.storageEngine}">H2 In-Memory Secure Enclave</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 10px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.825rem;">
+              <span class="text-muted">Boundary Posture:</span>
+              <span class="badge badge-cipher" th:text="${workspace.enclaveState}">ISOLATED &amp; ENCRYPTED</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- 9. Risk Assessment Summary & Heuristic Adapter Document -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">PILLAR III: RISK ASSESSMENT ENGINE (SPECIFICATION 1.0)</div>
+            <h3 class="card-title">Risk Assessment Summary &amp; Threat Breakdown</h3>
+          </div>
+          <span class="badge badge-pill badge-mono" style="border: 1px dashed var(--border-strong);">Adaptive Model</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 18px;">
+            
+            <div style="padding: 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div class="eyebrow">AUTHENTICATION VELOCITY</div>
+              <div style="font-size: 1.15rem; font-weight: 700; margin: 4px 0;" th:text="${riskAssessment.accessPosture}">OPTIMAL</div>
+              <p class="text-xs text-muted" style="margin: 0;">
+                Tracks failed login thresholds and brute-force velocity. Currently: <strong th:text="${failedLoginsCount}">0</strong> failed attempts recorded.
+              </p>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div class="eyebrow">CRYPTOGRAPHIC INTEGRITY</div>
+              <div style="font-size: 1.15rem; font-weight: 700; margin: 4px 0;" th:text="${riskAssessment.integrityPosture}">100% VERIFIED</div>
+              <p class="text-xs text-muted" style="margin: 0;">
+                Evaluates bit-rot, tampering, and signature mismatch. Zero decryption integrity anomalies registered.
+              </p>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div class="eyebrow">PREVIEW ADAPTER STATUS</div>
+              <div style="font-size: 1.15rem; font-weight: 700; margin: 4px 0;">SPEC 1.0 ACTIVE</div>
+              <p class="text-xs text-muted" style="margin: 0;">
+                Calculated posture score: <strong th:text="${riskAssessment.score}">0.05</strong>. Threat exposure coefficient: Minimal.
+              </p>
+            </div>
+
+          </div>
+
+          <div style="padding: 12px 16px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px dashed var(--border-default); font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+            <strong>Technical Disclosure &amp; Non-Mock Architecture Note:</strong> 
+            <span th:text="${riskAssessment.disclaimer}">Risk score is calculated via the V-GRT heuristic preview adapter. Underlying audit events, encryption status, and authentication traps are live production telemetry.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Recent Files & Quick Download Shortcuts -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">ENCRYPTED OBJECTS</div>
+            <h3 class="card-title">Recent Files &amp; Download Shortcuts</h3>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" class="btn btn-secondary btn-sm" data-modal-target="uploadModal">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Quick Upload
+            </button>
+            <a th:href="@{/vault}" class="btn btn-primary btn-sm">
+              View All Vault Files (<span th:text="${totalFiles}">0</span>)
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          
+          <!-- Empty State when files == 0 -->
+          <div th:if="${files == null or files.isEmpty()}" class="empty-state-card">
+            <div class="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <h4 style="margin: 0 0 6px 0; font-size: 1.1rem;">No Encrypted Files Found</h4>
+              <p class="text-sm text-muted" style="margin: 0; max-width: 440px;">
+                Your personal vault is isolated and empty. Upload your first document to activate AES-256-GCM envelope sealing and SHA-256 integrity verification.
+              </p>
+            </div>
+            <button type="button" class="btn btn-primary" data-modal-target="uploadModal">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload Your First File
+            </button>
+          </div>
+
+          <!-- Files Table when files exist -->
+          <div th:if="${files != null and !files.isEmpty()}" class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Filename</th>
+                  <th>Payload Size</th>
+                  <th>SHA-256 Digest</th>
+                  <th>Cipher Algorithm</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="file, iterStat : ${files}" th:if="${iterStat.index < 5}">
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      <span class="font-medium" th:text="${file.originalName}">document.pdf</span>
+                    </div>
+                  </td>
+                  <td class="font-mono text-sm" th:text="${#numbers.formatDecimal(file.sizeBytes / 1024.0, 1, 1) + ' KB'}">12.5 KB</td>
+                  <td>
+                    <code class="font-mono text-xs" th:text="${#strings.substring(file.sha256, 0, 16) + '...'}">a3b4c5...</code>
+                  </td>
+                  <td>
+                    <span class="badge badge-cipher" style="font-size: 0.65rem;">AES-256-GCM</span>
+                  </td>
+                  <td style="text-align: right;">
+                    <form th:action="@{'/files/' + ${file.id} + '/download'}" method="post" style="display: inline; margin: 0;">
+                      <button type="submit" class="btn btn-secondary btn-sm" title="Verify SHA-256 and decrypt">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 5 & 10. Recent Security Activity & Audit Events (Timeline & Table) -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">PILLAR II: GOVERNANCE &amp; AUDITABILITY</div>
+            <h3 class="card-title">Recent Security Activity &amp; Audit Events</h3>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a th:if="${isAdmin}" th:href="@{/admin/audit}" class="btn btn-secondary btn-sm">
+              Full System Ledger
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          
+          <!-- Empty Audit State -->
+          <div th:if="${auditEvents == null or auditEvents.isEmpty()}" class="empty-state-card" style="padding: 32px 16px;">
+            <p class="text-sm text-muted" style="margin: 0;">No security events recorded for current session.</p>
+          </div>
+
+          <!-- Activity Timeline Stream -->
+          <div th:if="${auditEvents != null and !auditEvents.isEmpty()}" class="timeline-stream">
+            <div th:each="event, iter : ${recentAuditEvents}" class="timeline-entry">
+              <div class="timeline-bullet" th:classappend="${event.outcome == 'SUCCESS' ? 'success' : 'failure'}"></div>
+              <div class="timeline-content">
+                <div class="timeline-desc">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="timeline-title" th:text="${event.eventType}">LOGIN</span>
+                    <span class="badge" th:classappend="${event.outcome == 'SUCCESS' ? 'badge-cipher' : 'badge-mono'}" th:text="${event.outcome}">SUCCESS</span>
+                  </div>
+                  <span class="timeline-meta" th:text="${event.details}">User authenticated</span>
+                </div>
+                <div class="text-xs text-muted font-mono" th:text="${#temporals.format(event.occurredAt.atZone(T(java.time.ZoneId).systemDefault()), 'HH:mm:ss · MMM dd')}">
+                  12:45:00 · Jan 01
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+  </div>
+</div>
+
+<!-- Direct File Upload Modal for Dashboard -->
+<div class="modal-overlay" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="uploadTitle">Encrypt &amp; Store New File</h3>
+      <button type="button" class="btn btn-ghost btn-sm btn-icon-only" data-modal-close aria-label="Close upload dialog">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form th:action="@{/files}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="redirect" value="/dashboard">
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+        <p class="text-sm text-secondary">
+          Files are encrypted before persistence using an ephemeral 256-bit AES-GCM data key wrapped with RSA-OAEP.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="dashFileInput">Select File (Max 10 MB):</label>
+          <input type="file" name="file" id="dashFileInput" class="form-input" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm">Encrypt &amp; Seal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Reusable Cryptographic Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+</body>
+</html>

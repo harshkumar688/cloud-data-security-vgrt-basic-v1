@@ -14,7 +14,7 @@
   <name>Cloud Data Security Enhancement System Using V-GRT Methodology</name>
   <description>Basic V1: account access, encrypted personal file storage and audit events.</description>
   <properties>
-    <java.version>25</java.version>
+    <java.version>21</java.version>
   </properties>
   <dependencies>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>

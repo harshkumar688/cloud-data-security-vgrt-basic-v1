@@ -1,7 +1,14 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-if not defined PORT set "PORT=8080"
+if not defined PORT set "PORT=8081"
+
+if not defined JAVA_HOME (
+    if exist "C:\Users\harsh\Downloads\jdk-23.0.2" set "JAVA_HOME=C:\Users\harsh\Downloads\jdk-23.0.2"
+)
+if defined JAVA_HOME (
+    set "PATH=%JAVA_HOME%\bin;%PATH%"
+)
 
 call mvnw.cmd -DskipTests package
 if errorlevel 1 exit /b %errorlevel%

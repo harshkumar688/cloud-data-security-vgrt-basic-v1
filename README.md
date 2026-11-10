@@ -14,6 +14,17 @@ Basic V1 prototype implementing account registration/login, per-account file iso
 
 V-GRT in this prototype means **Virtualization** through logical per-account isolation, **Governance** through account-scoped ownership and administrator audit access, and **Trustworthy Security** through encryption and integrity verification. Rule-based risk assessment, recommendations, file sharing/permission grants, tenant workspaces, data classification, retention rules, and evaluation-run comparisons are not implemented in this basic V1.
 
+## Platform Pages & Routes
+
+- `/` — Premium Overview Home (Problem statement, V-GRT methodology preview, data flow overview, CTA)
+- `/dashboard` — Enterprise Security Dashboard (User account status, file metrics, 7-day activity trend chart, payload composition, risk assessment summary, recent audit timeline, quick upload/download shortcuts)
+- `/vault` — Personal Encrypted Vault (Multi-tenant file list, per-object encryption status, direct download with SHA-256 integrity check)
+- `/about` — About the Project (Problem statement, importance of cloud security, project objectives, proposed solution, scope and limitations matrix)
+- `/methodology` — V-GRT Methodology (In-depth analysis of Virtualization, Governance, Risk Assessment, and Trustworthy Cryptography)
+- `/architecture` — System Architecture (Interactive 10-stage end-to-end pipeline diagram, component connectivity breakdown, technical implementation matrix)
+- `/admin/audit` — Forensic Audit Ledger (Chronological audit history with outcome status and timestamps for compliance auditing)
+
+
 ## Run locally
 
 - JDK 25.

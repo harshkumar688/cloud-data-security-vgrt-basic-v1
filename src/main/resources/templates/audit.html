@@ -1,6 +1,137 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Audit events · V-GRT Secure Cloud</title><link rel="stylesheet" th:href="@{/app.css}"></head>
-<body><header class="topbar"><a class="brand" th:href="@{/}"><span class="brand-mark">V</span><span>V-GRT <small>SECURE CLOUD</small></span></a><nav><a th:href="@{/}">My files</a><form th:action="@{/logout}" method="post"><button class="link-button">Sign out</button></form></nav></header>
-<main class="container"><section class="welcome"><div><p class="eyebrow">ADMINISTRATOR VIEW</p><h1>Audit events</h1><p class="muted">Latest 100 authentication and file activity events.</p></div></section>
-<div class="panel table-wrap"><table><thead><tr><th>Time (UTC)</th><th>Actor</th><th>Event</th><th>Resource</th><th>Outcome</th><th>Details</th></tr></thead><tbody><tr th:each="event : ${events}"><td th:text="${event.occurredAt}"></td><td th:text="${event.actorUsername ?: 'anonymous'}"></td><td th:text="${event.eventType}"></td><td th:text="${event.resourceId ?: '—'}"></td><td><span class="status" th:classappend="${event.outcome == 'SUCCESS'} ? ' ok' : ' bad'" th:text="${event.outcome}"></span></td><td th:text="${event.details}"></td></tr><tr th:if="${#lists.isEmpty(events)}"><td colspan="6" class="muted">No recorded events.</td></tr></tbody></table></div></main></body></html>
+<head th:replace="~{fragments/layout :: html-head('Audit Ledger')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('audit')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Governance', 'Audit Ledger')}"></div>
+
+    <!-- Reusable Page Container -->
+    <main class="page-container">
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="page-header-content">
+          <div class="eyebrow">GOVERNANCE & ACCOUNTABILITY</div>
+          <div class="page-header-title">
+            <h1>Security Audit Ledger</h1>
+            <span class="badge badge-pill badge-mono">Administrator View</span>
+          </div>
+          <p>Chronological immutable records of all authentication events, cryptographic operations, access requests, and denial events.</p>
+        </div>
+        <div class="page-header-actions">
+          <a th:href="@{/}" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Personal Vault
+          </a>
+          <button type="button" class="btn btn-primary" onclick="window.location.reload();">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Refresh Logs
+          </button>
+        </div>
+      </section>
+
+      <!-- Ledger Stats Summary -->
+      <section class="stat-card-grid" aria-label="Audit Activity Summary">
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Recorded Events</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+          </div>
+          <div class="stat-card-value" th:text="${#lists.size(events)}">0</div>
+          <div class="stat-card-sub text-muted">Latest activity window</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Audit Scope</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="stat-card-value" style="font-size: 1.45rem; font-family: var(--font-mono);">TOP 100</div>
+          <div class="stat-card-sub text-muted">Real-time chronologic index</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-card-label">
+            <span>Governance Policy</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="stat-card-value" style="font-size: 1.45rem; font-family: var(--font-mono);">SEC-V1</div>
+          <div class="stat-card-sub text-muted">Zero plaintext logging</div>
+        </article>
+      </section>
+
+      <!-- Events Table -->
+      <section>
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">CHRONOLOGICAL AUDIT TRAIL</div>
+            <h2 class="section-header-title">Security Activity Stream</h2>
+          </div>
+          <span class="badge badge-mono" th:text="${#lists.size(events)} + ' records'">0 records</span>
+        </div>
+
+        <!-- Empty State -->
+        <div class="card empty-state" th:if="${#lists.isEmpty(events)}">
+          <div class="empty-state-glyph">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <h3 class="empty-state-title">No audit records found</h3>
+          <p class="empty-state-desc">Authentication and file access attempts will be logged automatically here.</p>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container" th:if="${!#lists.isEmpty(events)}">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Timestamp (UTC)</th>
+                <th>Actor</th>
+                <th>Event Type</th>
+                <th>Resource ID</th>
+                <th>Outcome</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="event : ${events}">
+                <td class="font-mono text-xs text-muted" th:text="${event.occurredAt}">2026-11-10 15:46:00</td>
+                <td>
+                  <span class="badge badge-mono" th:text="${event.actorUsername ?: 'anonymous'}">user</span>
+                </td>
+                <td>
+                  <strong class="text-primary font-mono text-xs" th:text="${event.eventType}">LOGIN</strong>
+                </td>
+                <td class="font-mono text-xs text-muted" th:text="${event.resourceId ?: '—'}">—</td>
+                <td>
+                  <span class="badge badge-pill" 
+                        th:classappend="${event.outcome == 'SUCCESS' ? 'badge-success' : 'badge-danger'}" 
+                        th:text="${event.outcome}">SUCCESS</span>
+                </td>
+                <td class="text-secondary text-xs" th:text="${event.details}">Operation logged</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Reusable Common Footer -->
+    <div th:replace="~{fragments/layout :: footer}"></div>
+
+  </div>
+
+  <!-- Reusable Cryptographic Specs Modal -->
+  <div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+</div>
+</body>
+</html>

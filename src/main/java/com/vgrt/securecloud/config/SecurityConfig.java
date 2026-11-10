@@ -33,7 +33,23 @@ public class SecurityConfig {
     @Bean SecurityFilterChain securityFilterChain(HttpSecurity http, LoginAuditHandlers handlers) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/app.css", "/css/**", "/error").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/overview",
+                                "/about",
+                                "/methodology",
+                                "/architecture",
+                                "/architecture-diagram.svg",
+                                "/login",
+                                "/register",
+                                "/app.css",
+                                "/app.js",
+                                "/sample-output.html",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/error"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form.loginPage("/login").successHandler(handlers).failureHandler(handlers).permitAll())

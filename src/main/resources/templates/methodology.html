@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('V-GRT Methodology')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('methodology')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Documentation', 'V-GRT Methodology')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="page-header-content">
+          <div class="eyebrow">THE FOUR PILLARS OF CLOUD SECURITY</div>
+          <div class="page-header-title">
+            <h1>V-GRT Methodology</h1>
+            <span class="badge badge-cipher">Architectural Framework</span>
+          </div>
+          <p>A structured, multi-layered security methodology designed to secure sensitive assets across Virtualization, Governance, Risk Assessment, and Trustworthy Cryptography.</p>
+        </div>
+        <div class="page-header-actions">
+          <a th:href="@{/architecture}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            View System Architecture
+          </a>
+        </div>
+      </section>
+
+      <!-- Framework Overview Matrix -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">METHODOLOGICAL PARADIGM</div>
+            <h3 class="card-title">Framework Decomposition</h3>
+          </div>
+          <span class="badge badge-pill badge-mono">Defense in Depth</span>
+        </div>
+        <div class="card-body">
+          <p class="text-sm text-secondary" style="margin-bottom: 24px; line-height: 1.6;">
+            The V-GRT framework addresses the acute limitations of traditional perimeter-centric security models by imposing strict cryptographic and logical boundaries at four distinct architectural layers. Each pillar addresses specific threat vectors independently to eliminate single points of failure.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+            
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="font-mono text-sm font-bold text-primary">PILLAR 01</span>
+                <span class="badge badge-pill badge-mono" style="font-size: 0.65rem;">LAYER: ISOLATION</span>
+              </div>
+              <h4 style="margin: 0 0 6px 0; font-size: 1.1rem;">V — Virtualization</h4>
+              <p class="text-xs text-muted" style="margin: 0; line-height: 1.5;">
+                Logical multi-tenant isolation, isolated tenant namespaces, and cryptographic compartmentation preventing cross-tenant data leakage.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="font-mono text-sm font-bold text-primary">PILLAR 02</span>
+                <span class="badge badge-pill badge-mono" style="font-size: 0.65rem;">LAYER: ACCESS</span>
+              </div>
+              <h4 style="margin: 0 0 6px 0; font-size: 1.1rem;">G — Governance</h4>
+              <p class="text-xs text-muted" style="margin: 0; line-height: 1.5;">
+                Granular Role-Based Access Control (RBAC), strict identity authorization policies, and session security based on the Principle of Least Privilege.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="font-mono text-sm font-bold text-primary">PILLAR 03</span>
+                <span class="badge badge-pill badge-mono" style="font-size: 0.65rem;">LAYER: EVALUATION</span>
+              </div>
+              <h4 style="margin: 0 0 6px 0; font-size: 1.1rem;">R — Risk Assessment</h4>
+              <p class="text-xs text-muted" style="margin: 0; line-height: 1.5;">
+                Active detection of unauthorized access patterns, session anomalies, cryptographic mismatch identification, and structured threat scoring.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 18px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="font-mono text-sm font-bold text-primary">PILLAR 04</span>
+                <span class="badge badge-pill badge-mono" style="font-size: 0.65rem;">LAYER: CIPHER &amp; AUDIT</span>
+              </div>
+              <h4 style="margin: 0 0 6px 0; font-size: 1.1rem;">T — Trustworthy</h4>
+              <p class="text-xs text-muted" style="margin: 0; line-height: 1.5;">
+                Dual-envelope AES-256-GCM + RSA-OAEP encryption, automated SHA-256 integrity verification, and immutable chronological audit records.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Detailed Breakdown: Pillar 1 & Pillar 2 -->
+      <div class="info-content-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+        
+        <!-- Pillar 1: Virtualization -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PILLAR I · TENANT LOGICAL COMPARTMENTATION</div>
+              <h3 class="card-title">Virtualization &amp; Workspace Isolation</h3>
+            </div>
+            <span class="badge badge-cipher">Active Implementation</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-sm text-secondary">
+              In a shared cloud environment, multi-tenancy without rigorous logical segmentation is a primary source of catastrophic data exposure. Virtualization within V-GRT establishes strict boundaries across three dimensions:
+            </p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">1. LOGICAL REPOSITORY QUERIES</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  All file metadata and ciphertext references are strictly query-scoped by authenticated username (<code>findByNameAndOwnerUsername</code>). A tenant cannot query or enumerate records belonging to another principal.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">2. PER-OBJECT CRYPTOGRAPHIC KEY ISOLATION</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Tenants do not share symmetric encryption keys. Every upload generates an ephemeral 256-bit AES key used exclusively for that specific payload, preventing cascade compromise.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">3. ZERO CROSS-VISIBILITY GUARANTEE</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Personal vaults operate as isolated silos. Even administrative accounts are restricted from downloading or inspecting user plaintext without explicit authorization recorded in the audit trail.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Pillar 2: Governance -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PILLAR II · POLICY &amp; IDENTITY ENFORCEMENT</div>
+              <h3 class="card-title">Governance &amp; Access Control</h3>
+            </div>
+            <span class="badge badge-cipher">Active Implementation</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-sm text-secondary">
+              Governance translates organizational security mandates into programmatic enforcement. Access decisions are strictly mediated via Spring Security filter chains:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">1. ROLE-BASED ACCESS CONTROL (RBAC)</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Granular separation of roles: standard users (<code>ROLE_USER</code>) are restricted to personal vault interactions; compliance auditors (<code>ROLE_ADMIN</code>) possess dedicated rights to inspect system-wide audit telemetry.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">2. HARDENED CREDENTIAL DERIVATION</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Authentication credentials are salted and hashed utilizing BCrypt with a cost factor of 12 (4,096 iterations), rendering dictionary and rainbow-table attacks computationally prohibitive.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">3. PRINCIPLE OF LEAST PRIVILEGE</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Every endpoint enforces the minimum necessary permission profile. Anonymous callers have access strictly to public informational overviews and authentication ingress points.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Detailed Breakdown: Pillar 3 & Pillar 4 -->
+      <div class="info-content-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+        
+        <!-- Pillar 3: Risk Assessment -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PILLAR III · THREAT IDENTIFICATION &amp; SCORING</div>
+              <h3 class="card-title">Risk Assessment Engine</h3>
+            </div>
+            <span class="badge badge-mono">Active Logging + Planned Scoring</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-sm text-secondary">
+              Risk assessment proactively measures security posture and detects anomalies before exploitation can occur:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">1. REAL-TIME THREAT LOGGING (ACTIVE)</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  All authentication attempts, failed password submissions, and unauthorized endpoint probes are captured with source IP, client User-Agent, and exact ISO timestamps in the persistent audit database.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">2. INTEGRITY CHECKSUM ANOMALY DETECTION (ACTIVE)</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  If a ciphertext block or hash is corrupted, the retrieval pipeline halts immediately with an integrity breach exception, logging the tampering event to the security audit ledger.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
+                <div class="font-mono text-xs font-bold text-secondary" style="margin-bottom: 4px;">3. DYNAMIC RISK SCORING MODEL (ROADMAP)</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Planned integration of an automated risk evaluation engine that aggregates anomaly frequency, geographic deviation, and brute-force velocity to compute dynamic risk coefficients for tenant sessions.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Pillar 4: Trustworthy -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">PILLAR IV · CRYPTOGRAPHIC SOUNDNESS &amp; AUDITABILITY</div>
+              <h3 class="card-title">Trustworthy Security &amp; Ledger</h3>
+            </div>
+            <span class="badge badge-cipher">Active Implementation</span>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-sm text-secondary">
+              Trust in V-GRT is established mathematically through verifiable cryptography and non-repudiation:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">1. HYBRID ENVELOPE ENCRYPTION</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Data is sealed using <strong>AES-256-GCM</strong> (Galois/Counter Mode with 128-bit authentication tags). The symmetric key is then wrapped using <strong>RSA-OAEP-2048</strong> with SHA-256 and MGF1 masking.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">2. MANDATORY SHA-256 DIGEST RECALCULATION</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  During every download, decrypted bytes are re-hashed via SHA-256 and matched against the original upload digest. If a single bit differs, delivery is aborted.
+                </p>
+              </div>
+
+              <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                <div class="font-mono text-xs font-bold text-primary" style="margin-bottom: 4px;">3. IMMUTABLE FORENSIC AUDIT TRAIL</div>
+                <p class="text-xs text-muted" style="margin: 0;">
+                  Audit events are recorded synchronously in an append-only database table. Every authentication change, encryption cycle, and download is permanently recorded for forensic accountability.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+  </div>
+</div>
+
+<!-- Reusable Cryptographic Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+</body>
+</html>

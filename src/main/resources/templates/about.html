@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('About the Project')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Reusable Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('about')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Reusable Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Documentation', 'About the Project')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Page Header -->
+      <section class="page-header">
+        <div class="page-header-content">
+          <div class="eyebrow">RESEARCH &amp; ARCHITECTURAL SPECIFICATION</div>
+          <div class="page-header-title">
+            <h1>About the Project</h1>
+            <span class="badge badge-pill badge-mono">V-GRT 1.0</span>
+          </div>
+          <p>Cloud Data Security Enhancement System using the V-GRT Methodology: Virtualization, Governance, Risk Assessment, and Trustworthy Security.</p>
+        </div>
+        <div class="page-header-actions">
+          <a th:href="@{/methodology}" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            Explore Methodology
+          </a>
+          <a th:href="@{/architecture}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            System Architecture
+          </a>
+        </div>
+      </section>
+
+      <!-- Section: Executive Summary -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">CONTEXT &amp; FOUNDATION</div>
+            <h3 class="card-title">Executive Summary</h3>
+          </div>
+          <span class="badge badge-cipher">Zero Plaintext Persistence</span>
+        </div>
+        <div class="card-body text-secondary" style="font-size: 0.95rem; line-height: 1.7; display: flex; flex-direction: column; gap: 14px;">
+          <p>
+            The rapid migration of enterprise workloads to public and hybrid cloud environments has introduced critical vulnerabilities around data sovereignty, multi-tenant isolation, and rogue insider exposure. Modern organizations frequently store proprietary intelligence, customer records, and operational assets within shared multi-tenant infrastructure where perimeter defenses alone are insufficient.
+          </p>
+          <p>
+            This project—<strong>Cloud Data Security Enhancement System using the V-GRT Methodology</strong>—presents a rigorous, defense-in-depth architectural paradigm. By synthesizing logical <strong>Virtualization</strong> tenancy, strict <strong>Governance</strong> access policies, continuous <strong>Risk Assessment</strong> modeling, and <strong>Trustworthy</strong> hybrid envelope cryptography, the system ensures that user files remain cryptographically shielded from ingress to disk.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section: Problem Statement & Why Cloud Data Security Matters -->
+      <div class="info-content-grid" style="grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));">
+        
+        <!-- Problem Statement Card -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">THE CHALLENGE</div>
+              <h3 class="card-title">Problem Statement</h3>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-sm text-secondary">
+              Conventional cloud storage platforms suffer from foundational architectural limitations that place customer confidentiality at risk:
+            </p>
+            <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 0.875rem; color: var(--text-secondary);">
+              <li><strong>Provider-Managed Keys:</strong> When cloud providers retain encryption keys alongside data blobs, database breaches or subpoena mandates expose plaintext without tenant knowledge.</li>
+              <li><strong>Multi-Tenant Cross-Contamination:</strong> Logical flaws in multi-tenant application code can result in horizontal privilege escalation and unauthorized cross-account visibility.</li>
+              <li><strong>Silent Bit Rot &amp; File Tampering:</strong> Stored files can undergo undetected corruption or targeted byte manipulation in the absence of cryptographic integrity verification.</li>
+              <li><strong>Absence of Immutable Audit Trails:</strong> Security incidents frequently go unresolved when authentication and retrieval activities lack tamper-evident forensic histories.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Why It Matters Card -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="eyebrow">IMPACT &amp; COMPLIANCE</div>
+              <h3 class="card-title">Why Cloud Security Matters</h3>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <p class="text-sm text-secondary">
+              Securing cloud repositories is not solely an IT preference; it is an existential business and legal necessity:
+            </p>
+            <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 0.875rem; color: var(--text-secondary);">
+              <li><strong>Regulatory Mandates:</strong> Global frameworks including GDPR, HIPAA, and ISO 27001 demand provable technical controls, pseudonymization, and auditable access governance.</li>
+              <li><strong>Protection of Intellectual Property:</strong> Trade secrets, engineering designs, and proprietary models require mathematical protection that resists host-level physical introspection.</li>
+              <li><strong>Zero Trust Ingestion:</strong> Zero-trust network architectures dictate that neither network perimeters nor internal hosts should be inherently trusted.</li>
+              <li><strong>Brand Trust &amp; Liability:</strong> Demonstrating rigorous cryptographic verification protects enterprises from catastrophic data exfiltration penalties.</li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Section: Project Objectives & Proposed Solution -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">ENGINEERING GOALS</div>
+            <h3 class="card-title">Project Objectives</h3>
+          </div>
+          <span class="badge badge-mono">Formalized Requirements</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+            
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 20px;">
+              <div class="font-mono text-xs text-muted" style="margin-bottom: 8px;">OBJECTIVE 01</div>
+              <h4 style="margin: 0 0 8px 0; font-size: 1rem;">Cryptographic Envelope Isolation</h4>
+              <p class="text-sm text-secondary" style="margin: 0;">
+                Encrypt every uploaded file with an isolated 256-bit AES-GCM data key, wrapped using asymmetric RSA-OAEP before storage.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 20px;">
+              <div class="font-mono text-xs text-muted" style="margin-bottom: 8px;">OBJECTIVE 02</div>
+              <h4 style="margin: 0 0 8px 0; font-size: 1rem;">Strict Multi-Tenant Separation</h4>
+              <p class="text-sm text-secondary" style="margin: 0;">
+                Enforce workspace and entity-level boundaries in the persistence layer so that authenticated users only access their verified assets.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 20px;">
+              <div class="font-mono text-xs text-muted" style="margin-bottom: 8px;">OBJECTIVE 03</div>
+              <h4 style="margin: 0 0 8px 0; font-size: 1rem;">Automated Digest Verification</h4>
+              <p class="text-sm text-secondary" style="margin: 0;">
+                Generate SHA-256 integrity digests at upload and re-compute upon download to guarantee byte-for-byte authenticity.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 20px;">
+              <div class="font-mono text-xs text-muted" style="margin-bottom: 8px;">OBJECTIVE 04</div>
+              <h4 style="margin: 0 0 8px 0; font-size: 1rem;">Forensic Audit Ledger</h4>
+              <p class="text-sm text-secondary" style="margin: 0;">
+                Maintain immutable chronological records of authentication, authorization successes, failures, and file operations.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Project Scope & Technical Limitations -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="eyebrow">VERIFIED CAPABILITIES VS. BOUNDARIES</div>
+            <h3 class="card-title">Scope &amp; Technical Limitations</h3>
+          </div>
+          <span class="badge badge-pill badge-mono">Honest Architecture Disclosure</span>
+        </div>
+        <div class="card-body">
+          <div class="scope-columns">
+            
+            <!-- In Scope -->
+            <div class="scope-card included">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0; font-size: 1.05rem;">Implemented Scope (Functional)</h4>
+                <span class="badge badge-cipher">Active in Code</span>
+              </div>
+              <p class="text-xs text-muted" style="margin-top: 6px;">Fully implemented and verifiable in the current Java Spring Boot codebase:</p>
+              
+              <ul class="scope-list">
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Dual-Key Envelope Cryptography:</strong> Ephemeral AES-256-GCM symmetric ciphers wrapped with RSA-OAEP asymmetric keys.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Digest Integrity Validation:</strong> SHA-256 hash calculated at upload and re-evaluated before plaintext stream delivery.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Tenant Isolation:</strong> Spring Security authentication and repository queries strictly partitioned by username.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Cryptographic Password Hashing:</strong> BCrypt algorithm configured with a work factor of 12.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Forensic Event Logging:</strong> Real-time persistence of login successes, login failures, uploads, and downloads.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Out of Scope / Limitations -->
+            <div class="scope-card excluded">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0; font-size: 1.05rem;">Limitations &amp; Future Work</h4>
+                <span class="badge" style="border: 1px dashed var(--border-strong); color: var(--text-muted);">Roadmap Bounds</span>
+              </div>
+              <p class="text-xs text-muted" style="margin-top: 6px;">Explicit boundaries acknowledged for academic and technical honesty:</p>
+              
+              <ul class="scope-list">
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span><strong>Embedded Persistence Storage:</strong> Data and cipher payloads currently reside in an H2 relational database rather than a distributed S3 cluster.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span><strong>Hardware Security Module (HSM):</strong> Master RSA keys are managed in-memory/keystore rather than via physical FIPS 140-2 Level 3 hardware HSMs.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span><strong>Automated Machine Learning Risk Scoring:</strong> Dynamic threat scoring engine remains a documented specification rather than an active model service.</span>
+                </li>
+                <li class="scope-list-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span><strong>Multi-Region Consensus:</strong> Synchronous geographic replication across disparate sovereign jurisdictions is designated for Phase 2.</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Common Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+  </div>
+</div>
+
+<!-- Reusable Cryptographic Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+
+</body>
+</html>

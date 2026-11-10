@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,13 +20,23 @@ public class FileController {
     public FileController(FileService files) { this.files = files; }
 
     @PostMapping("/files")
-    public String upload(@RequestParam("file") MultipartFile file, Authentication auth, RedirectAttributes flash) {
+    public String upload(@RequestParam("file") MultipartFile file,
+                         @RequestParam(value = "redirect", required = false) String redirect,
+                         Authentication auth,
+                         RedirectAttributes flash) {
         try {
             files.upload(auth.getName(), file.getOriginalFilename(), file.getContentType(), file.getBytes());
-            flash.addFlashAttribute("success", "File encrypted and stored.");
-        } catch (IllegalArgumentException ex) { flash.addFlashAttribute("error", ex.getMessage()); }
-        catch (Exception ex) { flash.addFlashAttribute("error", "Upload failed. Check server configuration and try again."); }
-        return "redirect:/";
+            flash.addFlashAttribute("success", "File encrypted with AES-256-GCM and stored.");
+        } catch (IllegalArgumentException ex) {
+            flash.addFlashAttribute("error", ex.getMessage());
+        } catch (Exception ex) {
+            flash.addFlashAttribute("error", "Upload failed. Check server configuration and try again.");
+        }
+
+        if (redirect != null && redirect.startsWith("/")) {
+            return "redirect:" + redirect;
+        }
+        return "redirect:/vault";
     }
 
     @PostMapping("/files/{id}/download")
