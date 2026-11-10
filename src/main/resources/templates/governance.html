@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('Governance &amp; Access Policies')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('governance')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Policy Framework', 'Governance &amp; Access')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- SECTION 1: GOVERNANCE HERO BANNER -->
+      <section class="sec-hero-banner">
+        <div class="sec-status-hero">
+          <div class="sec-shield-badge" style="border-color: #3b82f6; color: #3b82f6; box-shadow: 0 0 24px rgba(59, 130, 246, 0.25);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="eyebrow" style="color: #3b82f6;">ZERO-TRUST POLICY FRAMEWORK</div>
+            <h1 style="margin: 4px 0 6px 0; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em;">
+              Governance &amp; Access Control Center
+            </h1>
+            <p class="text-xs text-muted" style="margin: 0; max-width: 620px;">
+              Principle of Least Privilege (PoLP), strict row-level cryptographic tenant boundaries, and non-repudiation auditing.
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="badge" th:classappend="${isCurrentUserAdmin ? 'badge-accent' : 'badge-cipher'}" style="padding: 6px 14px; font-size: 0.78rem;">
+            <span class="pulse-dot"></span>
+            <span th:text="'SESSION: ' + ${currentRole}">SESSION: USER</span>
+          </span>
+        </div>
+      </section>
+
+      <!-- SECTION 2: USER ROLES & PERMISSIONS OVERVIEW (USER vs ADMIN) -->
+      <div style="margin-top: 24px;">
+        <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0 0 4px 0;">Role &amp; Privilege Hierarchy</h2>
+        <p class="text-xs text-muted" style="margin: 0;">Defined roles operating under strict isolation boundaries.</p>
+      </div>
+
+      <div class="gov-role-grid" style="margin-top: 14px;">
+        <div class="gov-role-card" th:each="r : ${roleDefinitions}">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="badge" th:classappend="${r.badgeClass}" th:text="${r.roleName}">ROLE_USER</span>
+              <h3 style="margin: 8px 0 4px 0; font-size: 1.05rem;" th:text="${r.displayName}">Display Name</h3>
+            </div>
+            <span class="badge badge-mono" style="font-size: 0.65rem;">PoLP COMPLIANT</span>
+          </div>
+
+          <p class="text-xs text-secondary" style="margin: 0;" th:text="${r.description}">Description</p>
+
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+            <div class="eyebrow" style="color: #22c55e; margin-bottom: 8px;">PERMITTED CAPABILITIES</div>
+            <ul class="gov-permission-list">
+              <li class="gov-permission-item" th:each="perm : ${r.permissions}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><polyline points="20 6 9 17 4 12"/></svg>
+                <span th:text="${perm}">Perm</span>
+              </li>
+            </ul>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+            <div class="eyebrow" style="color: #ef4444; margin-bottom: 8px;">STRICT BOUNDARY RESTRICTIONS</div>
+            <ul class="gov-permission-list">
+              <li class="gov-permission-item denied" th:each="restr : ${r.restrictions}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <span th:text="${restr}">Restriction</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: FILE OWNERSHIP & WORKSPACE ACCESS POLICIES -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">ENCLAVE ISOLATION</div>
+            <h3 style="margin: 2px 0 0 0;">File Ownership &amp; Workspace Access Policies</h3>
+          </div>
+          <span class="badge badge-cipher">Active Enclave</span>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <div style="padding: 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                <span style="font-weight: 700; font-size: 0.85rem;">Strict Row-Level Ownership</span>
+              </div>
+              <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;">
+                Every SQL query for file retrieval, verification, or deletion enforces <code>WHERE owner_username = :current_user</code>. Direct ID guessing (IDOR) fails immediately and logs a security denial event.
+              </p>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span style="font-weight: 700; font-size: 0.85rem;">Ephemeral Data Key Isolation</span>
+              </div>
+              <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;">
+                A unique 256-bit AES key is generated in memory for every single uploaded file, wrapped with the RSA-2048 master key, and discarded immediately after ciphertext flush.
+              </p>
+            </div>
+
+            <div style="padding: 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span style="font-weight: 700; font-size: 0.85rem;">Storage Disassociation Guard</span>
+              </div>
+              <p class="text-xs text-secondary" style="margin: 0; line-height: 1.5;">
+                Objects on disk are named via random UUID storage keys (e.g. <code>c4f1a8e2.bin</code>). No plaintext file paths, filenames, or user metadata are ever persisted on physical storage volumes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: PERMISSION MANAGEMENT INTERFACE (USER ROSTER & ACCESS CONTROLS) -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">ACCESS DIRECTORY</div>
+            <h3 style="margin: 2px 0 0 0;">Permission Management &amp; Principal Registry</h3>
+          </div>
+          <span class="badge badge-mono" th:text="${totalRegisteredUsers} + ' Principals'">Principals</span>
+        </div>
+        <div class="card-body">
+
+          <!-- Notice when non-admin views the controls -->
+          <div th:unless="${isCurrentUserAdmin}" class="gov-locked-state" style="margin-bottom: 16px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <div>
+              <span style="font-weight: 700; color: #ef4444;">Administrative Controls Restricted:</span>
+              <span> You are signed in with <code>ROLE_USER</code>. Tenant governance privileges prevent modifying user roles or escalating account permissions. Administrative controls are read-only.</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Principal Username</th>
+                  <th>Assigned Role</th>
+                  <th>Status</th>
+                  <th>Account Created</th>
+                  <th>Administrative Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="u : ${userRoster}">
+                  <td style="font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface-raised); border: 1px solid var(--border-default); display: grid; place-items: center; font-size: 0.72rem;" th:text="${#strings.substring(u.username, 0, 1).toUpperCase()}">U</span>
+                    <span th:text="${u.username}">username</span>
+                    <span th:if="${u.username == currentUsername}" class="badge badge-mono" style="font-size: 0.62rem;">YOU</span>
+                  </td>
+                  <td>
+                    <span class="badge" th:classappend="${u.isAdmin ? 'badge-accent' : 'badge-cipher'}" th:text="${u.role}">USER</span>
+                  </td>
+                  <td>
+                    <span class="badge badge-cipher" th:text="${u.status}">ACTIVE</span>
+                  </td>
+                  <td class="font-mono text-xs text-muted" th:text="${u.createdAtFormatted}">Nov 10, 2026</td>
+                  <td>
+                    <!-- If current user is ADMIN, show active administrative button -->
+                    <div th:if="${isCurrentUserAdmin}">
+                      <button type="button" class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 4px 8px;">
+                        Manage Privileges
+                      </button>
+                    </div>
+                    <!-- If current user is standard USER, controls are disabled / locked -->
+                    <div th:unless="${isCurrentUserAdmin}">
+                      <button type="button" class="btn btn-secondary btn-sm" disabled style="opacity: 0.5; cursor: not-allowed; font-size: 0.72rem; padding: 4px 8px;" title="Requires ROLE_ADMIN privileges">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Admin Locked
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: GOVERNANCE POLICY ENFORCEMENT STATUS TABLE -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">COMPLIANCE ASSURANCE</div>
+            <h3 style="margin: 2px 0 0 0;">Governance Policy Status</h3>
+          </div>
+          <span class="badge badge-cipher">100% Enforced</span>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Policy ID</th>
+                  <th>Category</th>
+                  <th>Policy Specification</th>
+                  <th>Implementation Mechanism</th>
+                  <th>Enforcement Subsystem</th>
+                  <th>Enforcement Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="pol : ${governancePolicies}">
+                  <td class="font-mono text-xs" style="color: var(--text-muted);" th:text="${pol.id}">POL-01</td>
+                  <td style="font-weight: 600; font-size: 0.8rem;" th:text="${pol.category}">Access Control</td>
+                  <td style="font-weight: 700; font-size: 0.82rem;" th:text="${pol.policyName}">Strict Row-Level Tenant Isolation</td>
+                  <td class="text-xs text-secondary" th:text="${pol.implementationMechanism}">Implementation details</td>
+                  <td class="font-mono text-xs" th:text="${pol.enforcementLevel}">Kernel / Data Layer</td>
+                  <td>
+                    <span class="badge" th:classappend="${pol.statusBadge}">
+                      <span class="pulse-dot"></span>
+                      <span th:text="${pol.status}">ENFORCED</span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: ACCESS HISTORY LOG -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">AUDIT NON-REPUDIATION</div>
+            <h3 style="margin: 2px 0 0 0;">Access History Ledger</h3>
+          </div>
+          <span class="badge badge-mono">Real-Time Database Stream</span>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Log ID</th>
+                  <th>Timestamp</th>
+                  <th>Principal</th>
+                  <th>Operation</th>
+                  <th>Resource ID</th>
+                  <th>Outcome</th>
+                  <th>Audit Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:if="${#lists.isEmpty(accessLog)}">
+                  <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                    Zero access logs recorded yet.
+                  </td>
+                </tr>
+                <tr th:each="entry : ${accessLog}">
+                  <td class="font-mono text-xs text-muted" th:text="'#' + ${entry.id}">#1</td>
+                  <td class="font-mono text-xs" th:text="${entry.timestamp}">2026-11-10 18:00</td>
+                  <td style="font-weight: 600; font-size: 0.8rem;" th:text="${entry.actor}">user</td>
+                  <td>
+                    <span class="badge badge-mono" th:text="${entry.eventType}">FILE_DOWNLOAD</span>
+                  </td>
+                  <td class="font-mono text-xs" th:text="${entry.resourceId}">42</td>
+                  <td>
+                    <span class="badge" th:classappend="${entry.outcomeBadge}" th:text="${entry.outcome}">SUCCESS</span>
+                  </td>
+                  <td class="text-xs text-secondary" th:text="${entry.details}">Details</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout :: app-footer}"></div>
+
+  </div>
+</div>
+
+<!-- Security Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+<script th:replace="~{fragments/layout :: layout-scripts}"></script>
+</body>
+</html>

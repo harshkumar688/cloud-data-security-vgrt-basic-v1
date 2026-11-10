@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html-head('Risk Assessment &amp; Threat Detection')}"></head>
+<body>
+<div class="app-shell">
+
+  <!-- Sidebar Navigation -->
+  <div th:replace="~{fragments/layout :: sidebar('risk')}"></div>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main-wrap">
+    
+    <!-- Topbar Header -->
+    <div th:replace="~{fragments/layout :: topbar('Security Operations', 'Risk Assessment')}"></div>
+
+    <!-- Page Container -->
+    <main class="page-container">
+
+      <!-- Reassessment Feedback Notice -->
+      <div class="notice success" th:if="${reassessmentNotice}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span th:text="${reassessmentNotice}">Risk score successfully recomputed from active audit ledger telemetry.</span>
+      </div>
+
+      <!-- SECTION 1: OVERALL RISK OVERVIEW HERO CARD -->
+      <section class="risk-hero-card">
+        <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+          <!-- SVG Circular Progress Score Gauge -->
+          <div style="position: relative; width: 110px; height: 110px; display: grid; place-items: center;">
+            <svg class="risk-gauge-svg" viewBox="0 0 100 100">
+              <circle class="risk-gauge-bg" cx="50" cy="50" r="42"></circle>
+              <!-- Circumference = 2 * PI * 42 = 263.89 -->
+              <circle class="risk-gauge-val" cx="50" cy="50" r="42"
+                      stroke-dasharray="263.89"
+                      th:attr="stroke-dashoffset=${263.89 - (263.89 * riskScore / 100.0)},stroke=${severityColor}"></circle>
+            </svg>
+            <div class="risk-gauge-center">
+              <span class="risk-score-big" th:text="${riskScore}">4</span>
+              <span style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">/ 100</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+              <span class="badge" th:classappend="${severityBadgeClass}" th:text="${severityLevel}">LOW</span>
+              <span class="badge badge-mono" style="font-size: 0.68rem;">DETERMINISTIC TELEMETRY</span>
+            </div>
+            <h1 style="margin: 0 0 6px 0; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em;">
+              Threat &amp; Risk Posture Index
+            </h1>
+            <p class="text-xs text-muted" style="margin: 0; max-width: 580px;" th:text="${severitySummary}">
+              Nominal security posture: zero active perimeter violations, all cryptographic assertions passing with integrity.
+            </p>
+          </div>
+        </div>
+
+        <!-- Live Reassessment Form Trigger -->
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+          <form th:action="@{/risk/reassess}" method="post" style="margin: 0;">
+            <button type="submit" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              <span>Reassess Posture</span>
+            </button>
+          </form>
+          <span style="font-size: 0.7rem; color: var(--text-muted);">
+            Evaluates live audit events in real-time
+          </span>
+        </div>
+      </section>
+
+      <!-- SECTION 2: MATHEMATICAL SCORING EXPLANATION CARD -->
+      <section class="card" style="margin-top: 20px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">DETERMINISTIC AUDIT LOGIC</div>
+            <h3 style="margin: 2px 0 0 0;">Mathematical Scoring Formulation</h3>
+          </div>
+          <span class="badge badge-cipher">Zero Subjective Bias</span>
+        </div>
+        <div class="card-body">
+          <p class="text-xs text-secondary" style="margin-top: 0;">
+            In compliance with V-GRT enterprise principles, this risk score is strictly calculated from genuine database events recorded in the append-only <code>audit_events</code> ledger. No synthetic machine learning or hallucinated threats are claimed.
+          </p>
+          <div style="background: var(--bg-surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 14px 18px; font-family: var(--font-mono); font-size: 0.8rem; margin: 12px 0;">
+            <div style="color: var(--accent-contrast); font-weight: 700; margin-bottom: 4px;">Active Scoring Algorithm:</div>
+            <code style="color: var(--text-primary);" th:text="${scoringFormula}">Score = Base(4) + (Failed Logins × 12) + (Access Denials × 15) + (Integrity Breaches × 35) + (Upload Rejections × 5)</code>
+          </div>
+
+          <!-- Active Score Variables Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 14px;">
+            <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-xs); border: 1px solid var(--border-subtle);">
+              <div class="text-muted" style="font-size: 0.7rem;">Failed Logins</div>
+              <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono);" th:text="${failedLoginsCount}">0</div>
+              <div class="text-muted" style="font-size: 0.65rem;">Weight: +12 pts each</div>
+            </div>
+            <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-xs); border: 1px solid var(--border-subtle);">
+              <div class="text-muted" style="font-size: 0.7rem;">Access Denials (IDOR)</div>
+              <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono);" th:text="${deniedAccessCount}">0</div>
+              <div class="text-muted" style="font-size: 0.65rem;">Weight: +15 pts each</div>
+            </div>
+            <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-xs); border: 1px solid var(--border-subtle);">
+              <div class="text-muted" style="font-size: 0.7rem;">Integrity Failures</div>
+              <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono);" th:text="${integrityFailuresCount}">0</div>
+              <div class="text-muted" style="font-size: 0.65rem;">Weight: +35 pts each</div>
+            </div>
+            <div style="padding: 12px; background: var(--bg-surface-raised); border-radius: var(--radius-xs); border: 1px solid var(--border-subtle);">
+              <div class="text-muted" style="font-size: 0.7rem;">Upload Rejections</div>
+              <div style="font-size: 1.25rem; font-weight: 800; font-family: var(--font-mono);" th:text="${uploadFailuresCount}">0</div>
+              <div class="text-muted" style="font-size: 0.65rem;">Weight: +5 pts each</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: SEVERITY CATEGORIES BREAKDOWN MATRIX -->
+      <div style="margin-top: 24px;">
+        <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0 0 4px 0;">Severity Categories Matrix</h2>
+        <p class="text-xs text-muted" style="margin: 0;">Categorization criteria mapped to real-time security thresholds.</p>
+      </div>
+
+      <div class="risk-matrix-grid">
+        <div class="risk-tier-card" th:each="cat : ${severityCategories}">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge" th:classappend="${cat.badgeClass}" th:text="${cat.name}">Category</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);" th:text="${cat.scoreRange}">0-20</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px;">
+            <span style="font-size: 1.6rem; font-weight: 800; font-family: var(--font-mono);" th:text="${cat.activeIncidents}">0</span>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Active Triggers</span>
+          </div>
+          <p class="text-xs text-secondary" style="margin: 0; line-height: 1.4;" th:text="${cat.description}">Description</p>
+          <div style="width: 100%; height: 4px; background: var(--border-subtle); border-radius: 2px; overflow: hidden; margin-top: auto;">
+            <div style="height: 100%;" th:style="'background:' + ${cat.barColor} + '; width:' + (${cat.activeIncidents > 0 ? '100%' : '15%'})"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: UNUSUAL ACTIVITY & ANOMALOUS BEHAVIOR -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">HEURISTIC CORRELATION</div>
+            <h3 style="margin: 2px 0 0 0;">Unusual Activity &amp; Behavioral Detection</h3>
+          </div>
+          <span class="badge badge-cipher">Active Guard</span>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div th:each="act : ${unusualActivities}" style="display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+              <div style="width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0;"
+                   th:style="${act.severity == 'CRITICAL' ? 'background:rgba(239,68,68,0.15); color:#ef4444;' : act.severity == 'HIGH' ? 'background:rgba(249,115,22,0.15); color:#f97316;' : 'background:rgba(34,197,94,0.15); color:#22c55e;'}">
+                <svg th:if="${act.severity == 'CRITICAL' || act.severity == 'HIGH'}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <svg th:unless="${act.severity == 'CRITICAL' || act.severity == 'HIGH'}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                  <span style="font-weight: 700; font-size: 0.85rem;" th:text="${act.title}">Title</span>
+                  <span class="badge badge-mono" style="font-size: 0.65rem;" th:text="${act.timestamp}">Timestamp</span>
+                </div>
+                <p class="text-xs text-secondary" style="margin: 0;" th:text="${act.description}">Description</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: SUSPICIOUS AUDIT INCIDENTS (Failed Logins & Unauthorized Access) -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">TELEMETRY LEDGER</div>
+            <h3 style="margin: 2px 0 0 0;">Suspicious Activity &amp; Access Denials</h3>
+          </div>
+          <span class="badge badge-mono" th:text="${#lists.size(incidents)} + ' Recorded'">0 Recorded</span>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Event Type</th>
+                  <th>Principal Actor</th>
+                  <th>Security Outcome</th>
+                  <th>Severity</th>
+                  <th>Telemetry Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:if="${#lists.isEmpty(incidents)}">
+                  <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 8px auto; display: block;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Zero suspicious incidents recorded in active audit ledger. All authorization checks passing.
+                  </td>
+                </tr>
+                <tr th:each="inc : ${incidents}">
+                  <td class="font-mono text-xs" th:text="${inc.timestamp}">2026-11-10 18:00</td>
+                  <td>
+                    <span class="badge badge-mono" th:text="${inc.eventType}">LOGIN</span>
+                  </td>
+                  <td class="text-xs" th:text="${inc.actor}">user</td>
+                  <td>
+                    <span class="badge badge-danger" th:text="${inc.outcome}">FAILURE</span>
+                  </td>
+                  <td>
+                    <span class="badge" th:classappend="${inc.badgeClass}" th:text="${inc.severity}">HIGH</span>
+                  </td>
+                  <td class="text-xs text-secondary" th:text="${inc.details}">Details</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: HOW GOVERNANCE FEEDS THE RISK ENGINE -->
+      <section class="flow-connector-card">
+        <div class="eyebrow" style="color: #3b82f6;">INTER-MODULE ARCHITECTURE</div>
+        <h3 style="margin: 4px 0 6px 0;">How Governance Events Feed the Risk Engine</h3>
+        <p class="text-xs text-secondary" style="margin: 0; max-width: 720px;">
+          The Risk Assessment engine is strictly coupled to the Governance subsystem. When a governance policy is breached (such as an unauthorized IDOR file request or repeated credential failures), the event propagates synchronously into the audit ledger and adjusts real-time risk scores.
+        </p>
+
+        <div class="flow-steps-grid">
+          <div class="flow-step-item">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="flow-step-badge">1</span>
+              <span style="font-size: 0.78rem; font-weight: 700;">Policy Interception</span>
+            </div>
+            <p class="text-xs text-secondary" style="margin: 0;">
+              Governance filters intercept file requests. If tenant principal ≠ file owner, access is blocked immediately.
+            </p>
+          </div>
+
+          <div class="flow-step-item">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="flow-step-badge">2</span>
+              <span style="font-size: 0.78rem; font-weight: 700;">Audit Propagation</span>
+            </div>
+            <p class="text-xs text-secondary" style="margin: 0;">
+              A <code>DENIED</code> or <code>FAILURE</code> event is written to <code>AuditEventRepository</code> with actor username and resource ID.
+            </p>
+          </div>
+
+          <div class="flow-step-item">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="flow-step-badge">3</span>
+              <span style="font-size: 0.78rem; font-weight: 700;">Telemetry Aggregation</span>
+            </div>
+            <p class="text-xs text-secondary" style="margin: 0;">
+              <code>RiskService</code> executes deterministic counter queries across recent failure/denial events.
+            </p>
+          </div>
+
+          <div class="flow-step-item">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="flow-step-badge">4</span>
+              <span style="font-size: 0.78rem; font-weight: 700;">Score &amp; Alert Surface</span>
+            </div>
+            <p class="text-xs text-secondary" style="margin: 0;">
+              Mathematical formula updates risk index, triggering warning badges on Security Dashboard and Audit Ledger.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 7: RISK HISTORY & TRENDS -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">CHRONOLOGICAL EVOLUTION</div>
+            <h3 style="margin: 2px 0 0 0;">Risk History &amp; Posture Trends</h3>
+          </div>
+          <span class="badge badge-mono">Last 7 Days</span>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Assessment Checkpoint</th>
+                  <th>Calculated Score</th>
+                  <th>Assigned Level</th>
+                  <th>Telemetry Observation Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="pt : ${riskHistory}">
+                  <td class="font-mono text-xs" th:text="${pt.dateLabel}">Nov 10</td>
+                  <td>
+                    <span style="font-family: var(--font-mono); font-weight: 700;" th:text="${pt.score} + ' / 100'">4 / 100</span>
+                  </td>
+                  <td>
+                    <span class="badge" th:classappend="${pt.level == 'CRITICAL' ? 'badge-danger' : pt.level == 'HIGH' ? 'badge-danger' : pt.level == 'MEDIUM' ? 'badge-warning' : 'badge-cipher'}" th:text="${pt.level}">LOW</span>
+                  </td>
+                  <td class="text-xs text-secondary" th:text="${pt.notes}">Baseline state established</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 8: RECOMMENDED REMEDIATION ACTIONS -->
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div>
+            <div class="eyebrow">SECURITY ADVISORIES</div>
+            <h3 style="margin: 2px 0 0 0;">Recommended Remediation Actions</h3>
+          </div>
+          <span class="badge badge-mono" th:text="${#lists.size(remediations)} + ' Active Advisories'">Advisories</span>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="recommendation-card" th:each="rem : ${remediations}"
+                 th:classappend="${rem.severity == 'CRITICAL' ? 'severity-high' : rem.severity == 'HIGH' ? 'severity-high' : 'severity-info'}">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span class="font-mono text-xs text-muted" th:text="${rem.id}">REM-01</span>
+                    <span class="badge" th:classappend="${rem.severity == 'CRITICAL' || rem.severity == 'HIGH' ? 'badge-danger' : 'badge-cipher'}" th:text="${rem.severity}">HIGH</span>
+                    <span class="badge badge-mono" style="font-size: 0.65rem;" th:text="${rem.status}">STATUS</span>
+                  </div>
+                  <h4 style="margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 700;" th:text="${rem.title}">Remediation Title</h4>
+                  <p class="text-xs text-secondary" style="margin: 0; max-width: 680px;" th:text="${rem.description}">Description</p>
+                </div>
+
+                <div style="align-self: center;">
+                  <button type="button" class="btn btn-secondary btn-sm" th:text="${rem.suggestedAction}">Action</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/layout :: app-footer}"></div>
+
+  </div>
+</div>
+
+<!-- Security Specs Modal -->
+<div th:replace="~{fragments/layout :: crypto-modal}"></div>
+<script th:replace="~{fragments/layout :: layout-scripts}"></script>
+</body>
+</html>

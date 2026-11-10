@@ -3,6 +3,8 @@ package com.vgrt.securecloud.controller;
 import com.vgrt.securecloud.repository.AuditEventRepository;
 import com.vgrt.securecloud.service.DashboardService;
 import com.vgrt.securecloud.service.FileService;
+import com.vgrt.securecloud.service.GovernanceService;
+import com.vgrt.securecloud.service.RiskService;
 import com.vgrt.securecloud.service.SecurityCenterService;
 import java.util.Map;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -10,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PageController {
@@ -17,13 +21,18 @@ public class PageController {
     private final AuditEventRepository auditEvents;
     private final DashboardService dashboardService;
     private final SecurityCenterService securityCenterService;
+    private final RiskService riskService;
+    private final GovernanceService governanceService;
 
     public PageController(FileService files, AuditEventRepository auditEvents,
-                          DashboardService dashboardService, SecurityCenterService securityCenterService) {
+                          DashboardService dashboardService, SecurityCenterService securityCenterService,
+                          RiskService riskService, GovernanceService governanceService) {
         this.files = files;
         this.auditEvents = auditEvents;
         this.dashboardService = dashboardService;
         this.securityCenterService = securityCenterService;
+        this.riskService = riskService;
+        this.governanceService = governanceService;
     }
 
     private void populateAuthModel(Authentication auth, Model model, String activeNav) {
@@ -98,6 +107,43 @@ public class PageController {
         Map<String, Object> secData = securityCenterService.getSecurityData(auth.getName());
         model.addAllAttributes(secData);
         return "security";
+    }
+
+    @GetMapping("/risk")
+    public String riskAssessment(Authentication auth, Model model,
+                                 @RequestParam(value = "reassessed", required = false) String reassessed) {
+        populateAuthModel(auth, model, "risk");
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        Map<String, Object> riskData = riskService.assessRisk(auth.getName(), isAdmin);
+        model.addAllAttributes(riskData);
+        if ("true".equalsIgnoreCase(reassessed)) {
+            model.addAttribute("reassessmentNotice", "Live posture recalculation complete. Deterministic score updated based on active audit telemetry.");
+        }
+        return "risk";
+    }
+
+    @PostMapping("/risk/reassess")
+    public String triggerRiskReassessment(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        riskService.triggerReassessment(auth.getName());
+        return "redirect:/risk?reassessed=true";
+    }
+
+    @GetMapping("/governance")
+    public String governance(Authentication auth, Model model) {
+        populateAuthModel(auth, model, "governance");
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        Map<String, Object> govData = governanceService.getGovernanceData(auth.getName(), isAdmin);
+        model.addAllAttributes(govData);
+        return "governance";
     }
 
     @GetMapping("/about")
