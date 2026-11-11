@@ -18,6 +18,8 @@ public class AuditEvent {
     @Column(length = 80) private String resourceId;
     @Column(nullable = false, length = 20) private String outcome;
     @Column(nullable = false, length = 300) private String details;
+    @Column(length = 64) private String recordHash;
+    @Column(length = 64) private String previousHash;
     @Column(nullable = false) private Instant occurredAt = Instant.now();
 
     protected AuditEvent() {}
@@ -25,11 +27,20 @@ public class AuditEvent {
         this.actorUsername = actorUsername; this.eventType = eventType; this.resourceId = resourceId;
         this.outcome = outcome; this.details = details;
     }
+    public AuditEvent(String actorUsername, String eventType, String resourceId, String outcome, String details, String previousHash, String recordHash) {
+        this.actorUsername = actorUsername; this.eventType = eventType; this.resourceId = resourceId;
+        this.outcome = outcome; this.details = details;
+        this.previousHash = previousHash; this.recordHash = recordHash;
+    }
     public Long getId() { return id; }
     public String getActorUsername() { return actorUsername; }
     public String getEventType() { return eventType; }
     public String getResourceId() { return resourceId; }
     public String getOutcome() { return outcome; }
     public String getDetails() { return details; }
+    public String getRecordHash() { return recordHash; }
+    public void setRecordHash(String recordHash) { this.recordHash = recordHash; }
+    public String getPreviousHash() { return previousHash; }
+    public void setPreviousHash(String previousHash) { this.previousHash = previousHash; }
     public Instant getOccurredAt() { return occurredAt; }
 }
